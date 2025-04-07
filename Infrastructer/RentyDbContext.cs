@@ -1,12 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Renty.Server.Infrastructer.Model;
 
 namespace Renty.Server.Infrastructer
 {
-    public class RentyDbContext : DbContext
+    public class RentyDbContext : IdentityDbContext<Users>
     {
-        public DbSet<Users> Users { get; set; }
-        public DbSet<Sessions> Sessions { get; set; }
+        //public DbSet<Users> Users { get; set; }
         public DbSet<Items> Items { get; set; }
         public DbSet<ItemImages> ItemImages { get; set; }
         public DbSet<Categorys> Categorys { get; set; }
@@ -18,6 +18,8 @@ namespace Renty.Server.Infrastructer
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Users>()
                 .Property(u => u.Provider)
                 .HasConversion<string>();
@@ -25,16 +27,6 @@ namespace Renty.Server.Infrastructer
             modelBuilder.Entity<Users>()
                 .Property(u => u.State)
                 .HasConversion<string>();
-
-            modelBuilder.Entity<Sessions>()
-                .HasIndex(s => s.UserId);
-
-            modelBuilder.Entity<Sessions>()
-                .HasOne(s => s.User)
-                .WithMany(u => u.Sessions)
-                .HasForeignKey(s => s.UserId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .IsRequired(true);
 
             modelBuilder.Entity<Items>()
                 .Property(i => i.UnitOfTime)

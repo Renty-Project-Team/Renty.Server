@@ -4,8 +4,8 @@
     {
         public int Id { get; set; }
         public required int ItemId { get; set; }
-        public int? SellerId { get; set; }
-        public int? BuyerId { get; set; }
+        public string? SellerId { get; set; }
+        public string? BuyerId { get; set; }
         public int? LastMessageId { get; set; }
         public required int ChatCount { get; set; }
         public required int SellerUnreadCount { get; set; }

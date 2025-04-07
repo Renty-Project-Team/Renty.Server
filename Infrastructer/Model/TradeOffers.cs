@@ -11,7 +11,7 @@
     {
         public int Id { get; set; }
         public required int ItemId { get; set; }
-        public required int BuyerId { get; set; }
+        public required string BuyerId { get; set; }
         public required decimal Price { get; set; }
         public required decimal FinalPrice { get; set; }
         public required decimal SecurityDeposit { get; set; }

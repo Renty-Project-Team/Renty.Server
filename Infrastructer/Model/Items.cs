@@ -11,7 +11,7 @@
     public class Items
     {
         public int Id { get; set; }
-        public required int SellerId { get; set; }
+        public required string SellerId { get; set; }
         public required decimal Price { get; set; }
         public decimal SecurityDeposit { get; set; }
         public required UnitOfTime UnitOfTime { get; set; }

@@ -12,8 +12,8 @@
     {
         public int Id { get; set; }
         public int? ChatRoomId { get; set; }
-        public int? SenderId { get; set; }
-        public int? ReceiverId { get; set; }
+        public string? SenderId { get; set; }
+        public string? ReceiverId { get; set; }
         public required string Content { get; set; }
         public required MessageType Type { get; set; }
         public required DateTime ReadAt { get; set; }
