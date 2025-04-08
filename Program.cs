@@ -15,31 +15,31 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<RentyDbContext>();
 
-// 2. ASP.NET Core Identity ¼­ºñ½º µî·Ï (Users Å¬·¡½º »ç¿ë)
+// 2. ASP.NET Core Identity ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ (Users Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½)
 builder.Services.AddIdentity<Users, IdentityRole>(options => {
-    // ºñ¹Ð¹øÈ£ Á¤Ã¥ µî ÇÊ¿ä ½Ã ¼³Á¤
+    // ï¿½ï¿½Ð¹ï¿½È£ ï¿½ï¿½Ã¥ ï¿½ï¿½ ï¿½Ê¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     options.Password.RequireDigit = false;
     options.Password.RequiredLength = 6;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireUppercase = false;
     options.Password.RequireLowercase = false;
 
-    options.User.RequireUniqueEmail = true; // °íÀ¯ ÀÌ¸ÞÀÏ ¿ä±¸
-    options.SignIn.RequireConfirmedAccount = false; // ÀÌ¸ÞÀÏ È®ÀÎ ÇÊ¿ä ¿©ºÎ (API¿¡¼­´Â º¸Åë false)
+    options.User.RequireUniqueEmail = true; // ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ä±¸
+    options.SignIn.RequireConfirmedAccount = false; // ï¿½Ì¸ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½ (APIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ false)
 })
     .AddEntityFrameworkStores<RentyDbContext>()
-    .AddDefaultTokenProviders(); // ºñ¹Ð¹øÈ£ Àç¼³Á¤ ÅäÅ« µî¿¡ ÇÊ¿ä
+    .AddDefaultTokenProviders(); // ï¿½ï¿½Ð¹ï¿½È£ ï¿½ç¼³ï¿½ï¿½ ï¿½ï¿½Å« ï¿½î¿¡ ï¿½Ê¿ï¿½
 
-// 3. << Áß¿ä >> ÄíÅ° ±â¹Ý ÀÎÁõ ¼³Á¤
+// 3. << ï¿½ß¿ï¿½ >> ï¿½ï¿½Å° ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.Cookie.HttpOnly = true; // JavaScript¿¡¼­ ÄíÅ° Á¢±Ù ºÒ°¡ (º¸¾È ÇÊ¼ö)
-    // options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // HTTPS °­Á¦ ½Ã (¿î¿µ È¯°æ ÇÊ¼ö)
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // ºñÈ°¼º ½Ã ¸¸·á ½Ã°£ (¿¹: 30ºÐ)
-    options.SlidingExpiration = true; // <<--- È°µ¿ ½Ã ¸¸·á ½Ã°£ ÀÚµ¿ ¿¬Àå (·Î±×ÀÎ À¯Áö ÇÙ½É)
-    options.Cookie.Name = ".Renty.AuthCookie"; // ÄíÅ° ÀÌ¸§ ÁöÁ¤ (¼±ÅÃ)
+    options.Cookie.HttpOnly = true; // JavaScriptï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å° ï¿½ï¿½ï¿½ï¿½ ï¿½Ò°ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¼ï¿½)
+    // options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // HTTPS ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ (ï¿½î¿µ È¯ï¿½ï¿½ ï¿½Ê¼ï¿½)
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // ï¿½ï¿½È°ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ (ï¿½ï¿½: 30ï¿½ï¿½)
+    options.SlidingExpiration = true; // <<--- È°ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½)
+    options.Cookie.Name = ".Renty.AuthCookie"; // ï¿½ï¿½Å° ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½)
 
-    // API µ¿ÀÛÀ» À§ÇØ ¸®µð·º¼Ç ´ë½Å »óÅÂ ÄÚµå ¹ÝÈ¯ ¼³Á¤
+    // API ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ð·º¼ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ ï¿½ï¿½È¯ ï¿½ï¿½ï¿½ï¿½
     options.Events = new CookieAuthenticationEvents
     {
         OnRedirectToLogin = context => // 401 Unauthorized
@@ -55,14 +55,14 @@ builder.Services.ConfigureApplicationCookie(options =>
     };
 });
 
-// 4. CORS ¼³Á¤ (ÇÃ·¯ÅÍ ¾Û µî ´Ù¸¥ ÃâÃ³¿¡¼­ÀÇ ¿äÃ» Çã¿ë)
+// 4. CORS ï¿½ï¿½ï¿½ï¿½ (ï¿½Ã·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã» ï¿½ï¿½ï¿½)
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFlutterApp", // Á¤Ã¥ ÀÌ¸§
-        policy => policy.AllowAnyOrigin()
+    options.AddPolicy("AllowFlutterApp", // ï¿½ï¿½Ã¥ ï¿½Ì¸ï¿½
+        policy => policy
                         .AllowAnyHeader()
                         .AllowAnyMethod()
-                        .AllowCredentials()); // <<-- ÄíÅ°¸¦ ÁÖ°í¹Þ±â À§ÇØ ÇÊ¼ö!!!
+                        .AllowCredentials()); // <<-- ï¿½ï¿½Å°ï¿½ï¿½ ï¿½Ö°ï¿½ï¿½Þ±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¼ï¿½!!!
 });
 
 
@@ -81,12 +81,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// CORS ¹Ìµé¿þ¾î Ãß°¡ (Authentication/Authorization Àü¿¡!)
+// CORS ï¿½Ìµï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ (Authentication/Authorization ï¿½ï¿½ï¿½ï¿½!)
 app.UseCors("AllowFlutterApp");
 
-// << Áß¿ä >> ÀÎÁõ ¹× ±ÇÇÑ ºÎ¿© ¹Ìµé¿þ¾î Ãß°¡ (¼ø¼­ Áß¿ä!)
-app.UseAuthentication(); // ¿äÃ»ÀÇ ÄíÅ°¸¦ È®ÀÎÇÏ°í »ç¿ëÀÚ ÀÎÁõ
-app.UseAuthorization(); // [Authorize] Æ¯¼º Ã³¸®
+// << ï¿½ß¿ï¿½ >> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Î¿ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ß¿ï¿½!)
+app.UseAuthentication(); // ï¿½ï¿½Ã»ï¿½ï¿½ ï¿½ï¿½Å°ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+app.UseAuthorization(); // [Authorize] Æ¯ï¿½ï¿½ Ã³ï¿½ï¿½
 
 app.MapControllers();
 
