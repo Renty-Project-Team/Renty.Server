@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Renty.Server.Domain.Auth;
 using Renty.Server.Infrastructer;
+using Renty.Server.Infrastructer.Auth;
 using Renty.Server.Infrastructer.Model;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +15,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// DI 클래스 연결
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+// 1. DB 등록
 builder.Services.AddDbContext<RentyDbContext>();
 
 // 2. ASP.NET Core Identity 서비스 등록 (Users 클래스 사용)
@@ -35,7 +41,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.HttpOnly = true; // JavaScript에서 쿠키 접근 불가 (보안 필수)
     // options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // HTTPS 강제 시 (운영 환경 필수)
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // ��Ȱ�� �� ���� �ð� (��: 30��)
+    options.ExpireTimeSpan = TimeSpan.FromDays(14); // 비활성 시 만료 시간 (예: 30분)
     options.SlidingExpiration = true; // <<--- 활동 시 만료 시간 자동 연장 (로그인 유지 핵심)
     options.Cookie.Name = ".Renty.AuthCookie"; // 쿠키 이름 지정 (선택)
 
