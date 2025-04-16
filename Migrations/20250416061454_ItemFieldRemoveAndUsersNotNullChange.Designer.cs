@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Renty.Server.Infrastructer;
 
@@ -10,9 +11,11 @@ using Renty.Server.Infrastructer;
 namespace Renty.Server.Migrations
 {
     [DbContext(typeof(RentyDbContext))]
-    partial class RentyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250416061454_ItemFieldRemoveAndUsersNotNullChange")]
+    partial class ItemFieldRemoveAndUsersNotNullChange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.2");
@@ -175,68 +178,6 @@ namespace Renty.Server.Migrations
                     b.HasIndex("Name");
 
                     b.ToTable("Categorys");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "ClothingAndFashion"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Electronics"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "FurnitureAndInterior"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Beauty"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Books"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Stationery"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "CarAccessories"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = "Sports"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Name = "InfantsAndChildren"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Name = "PetSupplies"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Name = "HealthAndMedical"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            Name = "Hobbies"
-                        });
                 });
 
             modelBuilder.Entity("Renty.Server.Infrastructer.Model.ChatMessages", b =>

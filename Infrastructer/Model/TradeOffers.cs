@@ -15,7 +15,7 @@
         public required decimal Price { get; set; }
         public required decimal FinalPrice { get; set; }
         public required decimal SecurityDeposit { get; set; }
-        public required UnitOfTime UnitOfTime { get; set; }
+        public required PriceUnit UnitOfTime { get; set; }
         public DateTime? BorrowStartAt { get; set; }
         public DateTime? ReturnAt { get; set; }
         public required DateTime CreatedAt { get; set; }

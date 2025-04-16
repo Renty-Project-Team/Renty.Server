@@ -2,7 +2,7 @@
 {
     public enum CategoryType
     {
-        ClothingAndFashion,
+        ClothingAndFashion = 1,
         Electronics,
         FurnitureAndInterior,
         Beauty,

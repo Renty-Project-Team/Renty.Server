@@ -26,7 +26,7 @@ namespace Renty.Server.Infrastructer.Model
         public UserState State { get; set; } = UserState.Active;
         public required string Name { get; set; }
         public required string Nickname { get; set; }
-        public required string AccountNumber { get; set; }
+        public string? AccountNumber { get; set; }
         public float MannerScore { get; set; }
         public string? ProfileImage { get; set; }
         public int TotalIncome { get; set; }

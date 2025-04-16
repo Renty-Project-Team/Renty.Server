@@ -1,6 +1,6 @@
 ﻿namespace Renty.Server.Infrastructer.Model
 {
-    public enum UnitOfTime
+    public enum PriceUnit
     {
         Day,
         Week,

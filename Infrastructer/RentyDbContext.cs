@@ -68,6 +68,12 @@ namespace Renty.Server.Infrastructer
                 .WithMany(i => i.Categories)
                 .UsingEntity(j => j.ToTable("item_categorys"));
 
+            modelBuilder.Entity<Categorys>().HasData(
+                Enum.GetValues(typeof(CategoryType)).Cast<CategoryType>().Select(c =>
+                    new Categorys() { Id = (int)c, Name = c}
+                )
+            );
+
             modelBuilder.Entity<ChatRooms>()
                 .HasIndex(c => c.ItemId);
 
