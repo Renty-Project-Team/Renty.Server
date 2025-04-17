@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Renty.Server.Domain.Auth;
+using Renty.Server.Global;
 using Renty.Server.Infrastructer;
 using Renty.Server.Infrastructer.Auth;
 using Renty.Server.Infrastructer.Model;
@@ -14,6 +15,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// --- Options Pattern 설정 추가 ---
+builder.Services.Configure<Settings>(
+    builder.Configuration.GetSection("Settings") // "Setting" 섹션과 매핑
+);
 
 // DI 클래스 연결
 builder.Services.AddScoped<IUserRepository, UserRepository>();

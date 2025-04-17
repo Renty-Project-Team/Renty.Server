@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Renty.Server.Global;
 using Renty.Server.Infrastructer.Model;
 
 namespace Renty.Server.Infrastructer
 {
-    public class RentyDbContext : IdentityDbContext<Users>
+    public class RentyDbContext(IOptions<Settings> settings) : IdentityDbContext<Users>
     {
         //public DbSet<Users> Users { get; set; }
         public DbSet<Items> Items { get; set; }
@@ -68,9 +70,11 @@ namespace Renty.Server.Infrastructer
                 .WithMany(i => i.Categories)
                 .UsingEntity(j => j.ToTable("item_categorys"));
 
-            modelBuilder.Entity<Categorys>().HasData(
-                Enum.GetValues(typeof(CategoryType)).Cast<CategoryType>().Select(c =>
-                    new Categorys() { Id = (int)c, Name = c}
+            modelBuilder.Entity<Categorys>().HasData
+            (
+                Enum.GetValues(typeof(CategoryType)).Cast<CategoryType>().Select
+                (
+                    c => new Categorys() { Id = (int)c, Name = c}
                 )
             );
 
@@ -213,8 +217,8 @@ namespace Renty.Server.Infrastructer
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // databse.db에는 db파일을 저장할 경로를 적는다.
-            optionsBuilder.UseSqlite("Data Source=/app/database/database.db");
+            var dataStorage = settings.Value.DataStorage;
+            optionsBuilder.UseSqlite($"Data Source={dataStorage}/database.db");
         }
     }
 }
