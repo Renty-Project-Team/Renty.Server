@@ -3,11 +3,11 @@
     public class ItemImages
     {
         public int Id { get; set; }
-        public required int ItemId { get; set; }
+        public int ItemId { get; set; }
         public required string ImageUrl { get; set; }
-        public int Order { get; set; } = 0;
+        public required int Order { get; set; }
         public required DateTime CreatedAt { get; set; }
 
-        public required Items Item { get; set; }
+        public Items Item { get; set; }
     }
 }

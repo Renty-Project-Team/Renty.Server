@@ -1,11 +1,14 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Renty.Server.Domain.Auth;
+using Renty.Server.Domain.Product;
 using Renty.Server.Global;
 using Renty.Server.Infrastructer;
 using Renty.Server.Infrastructer.Auth;
 using Renty.Server.Infrastructer.Model;
+using Renty.Server.Infrastructer.Product;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +26,7 @@ builder.Services.Configure<Settings>(
 
 // DI 클래스 연결
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 // 1. DB 등록
 builder.Services.AddDbContext<RentyDbContext>();
@@ -78,7 +82,6 @@ builder.Services.AddCors(options =>
 });
 
 
-
 var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
@@ -91,6 +94,23 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+// 정적 파일(이미지) 미들웨어 추가
+var settings = builder.Configuration.GetSection("Settings");
+var imagePath = Path.Combine(settings["DataStorage"], settings["ImagesFolder"]);
+if (!string.IsNullOrEmpty(imagePath))
+{
+    if (!Directory.Exists(imagePath))
+    {
+        Directory.CreateDirectory(imagePath);
+    }
+
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(imagePath),
+        RequestPath = settings["ImagesUrl"] // 이 URL 경로로 접근 가능
+    });
 }
 
 // CORS 미들웨어 추가 (Authentication/Authorization 전에!)
