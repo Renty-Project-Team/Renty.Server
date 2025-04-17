@@ -1,6 +1,5 @@
 ﻿namespace Renty.Server.Infrastructer.Model
 {
-
     public enum ItemState
     {
         Active,
@@ -13,8 +12,8 @@
         public int Id { get; set; }
         public required string SellerId { get; set; }
         public required decimal Price { get; set; }
-        public decimal SecurityDeposit { get; set; }
-        public required PriceUnit UnitOfTime { get; set; }
+        public required decimal SecurityDeposit { get; set; }
+        public required PriceUnit PriceUnit { get; set; }
         public required string Title { get; set; }
         public required string Description { get; set; }
         public required int ViewCount { get; set; }

@@ -29,7 +29,7 @@ namespace Renty.Server.Infrastructer
                 .HasConversion<string>();
 
             modelBuilder.Entity<Items>()
-                .Property(i => i.UnitOfTime)
+                .Property(i => i.PriceUnit)
                 .HasConversion<string>();
 
             modelBuilder.Entity<Items>()
