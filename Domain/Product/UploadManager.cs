@@ -2,7 +2,7 @@
 
 namespace Renty.Server.Domain.Product
 {
-    public class UploadManager(IProductRepository product, string userId)
+    public class UploadManager(IProductUploadRepository product, string userId)
     {
         public async Task Upload(UploadRequest request)
         {

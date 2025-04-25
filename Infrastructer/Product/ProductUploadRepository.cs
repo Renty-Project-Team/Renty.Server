@@ -8,13 +8,13 @@ using System.Xml.Linq;
 
 namespace Renty.Server.Infrastructer.Product
 {
-    public class ProductRepository : IProductRepository
+    public class ProductUploadRepository : IProductUploadRepository
     {
         private string imageFolder;
         private string imageUrlBase;
         private RentyDbContext dbContext;
 
-        public ProductRepository(RentyDbContext dbContext, IOptions<Settings> options)
+        public ProductUploadRepository(RentyDbContext dbContext, IOptions<Settings> options)
         {
             string imageStorage = Path.Combine(options.Value.DataStorage, options.Value.ImagesFolder);
             string folder = Guid.NewGuid().ToString();

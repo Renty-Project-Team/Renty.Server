@@ -1,6 +1,6 @@
 ﻿namespace Renty.Server.Domain.Product
 {
-    public interface IProductRepository
+    public interface IProductUploadRepository
     {
         Task CreatePost(UploadRequest request, string userId, ICollection<string> imgNameList);
         void RemoveImages();

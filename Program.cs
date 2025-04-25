@@ -9,6 +9,7 @@ using Renty.Server.Infrastructer;
 using Renty.Server.Infrastructer.Auth;
 using Renty.Server.Infrastructer.Model;
 using Renty.Server.Infrastructer.Product;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +27,20 @@ builder.Services.Configure<Settings>(
 
 // DI 클래스 연결
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductUploadRepository, ProductUploadRepository>();
+builder.Services.AddScoped<IProductFindRepository, ProductFindRepository>();
+
+// enum을 문자열로 변환하는 JsonStringEnumConverter 추가
+builder.Services.AddControllers()
+    .AddJsonOptions(options => // JSON 옵션 설정
+    {
+        // 모든 Enum 타입을 문자열로 변환하도록 JsonStringEnumConverter 추가
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+
+        // (선택적) JsonStringEnumConverter 생성자에 NamingPolicy를 지정하여
+        // CamelCase 등의 네이밍 규칙을 적용할 수도 있습니다.
+        // 예: options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+    });
 
 // 1. DB 등록
 builder.Services.AddDbContext<RentyDbContext>();
