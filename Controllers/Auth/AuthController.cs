@@ -14,10 +14,8 @@ namespace Renty.Server.Controllers.Auth
     {
         [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+        public async Task<IActionResult> Register(RegisterRequest request)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
             try
             {
                 await new AuthManager(userRepository).Register(request);
@@ -32,10 +30,8 @@ namespace Renty.Server.Controllers.Auth
 
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login(LoginRequest request)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
             try
             {
                 await new AuthManager(userRepository).Login(request);

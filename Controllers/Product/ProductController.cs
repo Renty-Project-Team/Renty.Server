@@ -16,7 +16,6 @@ namespace Renty.Server.Controllers.Product
         [RequestSizeLimit(10 * 1024 * 1024)]
         public async Task<IActionResult> Upload([FromForm] UploadRequest request)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
             await new UploadManager(product, userId).Upload(request);
