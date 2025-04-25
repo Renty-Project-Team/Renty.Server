@@ -42,6 +42,10 @@ namespace Renty.Server.Infrastructer
                 .HasIndex(i => i.SellerId);
 
             modelBuilder.Entity<Items>()
+                .HasIndex(i => new { i.CreatedAt, i.Id })
+                .IsDescending(true, true);
+
+            modelBuilder.Entity<Items>()
                 .HasOne(i => i.Seller)
                 .WithMany(u => u.Items)
                 .HasForeignKey(i => i.SellerId)
