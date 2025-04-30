@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Renty.Server.Domain.Auth;
+using Renty.Server.Domain.Chat;
 using Renty.Server.Domain.Product;
 using Renty.Server.Global;
 using Renty.Server.Infrastructer;
 using Renty.Server.Infrastructer.Auth;
+using Renty.Server.Infrastructer.Chat;
 using Renty.Server.Infrastructer.Model;
 using Renty.Server.Infrastructer.Product;
 using System.Text.Json.Serialization;
@@ -29,6 +31,8 @@ builder.Services.Configure<Settings>(
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductUploadRepository, ProductUploadRepository>();
 builder.Services.AddScoped<IProductFindRepository, ProductFindRepository>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
+
 
 // enum을 문자열로 변환하는 JsonStringEnumConverter 추가
 builder.Services.AddControllers()
