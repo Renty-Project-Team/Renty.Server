@@ -46,6 +46,9 @@ namespace Renty.Server.Infrastructer
                 .IsDescending(true, true);
 
             modelBuilder.Entity<Items>()
+                .HasQueryFilter(item => item.DeletedAt == null);
+
+            modelBuilder.Entity<Items>()
                 .HasOne(i => i.Seller)
                 .WithMany(u => u.Items)
                 .HasForeignKey(i => i.SellerId)
@@ -90,6 +93,9 @@ namespace Renty.Server.Infrastructer
 
             modelBuilder.Entity<ChatRooms>()
                 .HasIndex(c => c.BuyerId);
+
+            modelBuilder.Entity<ChatRooms>()
+                .HasQueryFilter(room => room.DeletedAt == null);
 
             modelBuilder.Entity<ChatRooms>()
                 .HasOne(c => c.Item)
