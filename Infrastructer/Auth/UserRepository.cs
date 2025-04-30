@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Renty.Server.Domain.Auth;
 using Renty.Server.Exceptions;
 using Renty.Server.Global;
@@ -13,11 +14,9 @@ namespace Renty.Server.Infrastructer.Auth
         {
             var user = new Users
             {
-                UserName = request.Email, // UserName은 보통 Email과 동일하게 설정
+                UserName = request.UserName, // UserName은 보통 Email과 동일하게 설정
                 Email = request.Email,
                 Name = request.Name,
-                Nickname = request.Nickname,
-                AccountNumber = request.AccountNumber,
                 PhoneNumber = request.PhoneNumber, // IdentityUser 속성에 저장
                 CreatedAt = TimeHelper.GetKoreanTime(), // 생성 시간 기록
                 State = UserState.Active, // 기본 상태
@@ -30,8 +29,10 @@ namespace Renty.Server.Infrastructer.Auth
 
         public async Task AddSignToCookie(string email, string password)
         {
+            var user = await userManager.FindByEmailAsync(email) ?? throw new LoginFailException();
+
             var result = await signInManager.PasswordSignInAsync(
-                email,
+                user,
                 password,
                 isPersistent: true, // <<-- 자동 로그인(영구 쿠키) 설정
                 lockoutOnFailure: false); // 실패 시 계정 잠금 옵션

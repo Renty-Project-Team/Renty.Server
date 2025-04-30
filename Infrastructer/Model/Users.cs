@@ -25,7 +25,6 @@ namespace Renty.Server.Infrastructer.Model
         public Provider? Provider { get; set; }
         public UserState State { get; set; } = UserState.Active;
         public required string Name { get; set; }
-        public required string Nickname { get; set; }
         public string? AccountNumber { get; set; }
         public float MannerScore { get; set; }
         public string? ProfileImage { get; set; }

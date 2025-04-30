@@ -51,6 +51,8 @@ builder.Services.AddDbContext<RentyDbContext>();
 
 // 2. ASP.NET Core Identity 서비스 등록 (Users 클래스 사용)
 builder.Services.AddIdentity<Users, IdentityRole>(options => {
+    // UserName 값 제한 해제
+    options.User.AllowedUserNameCharacters = null;
     // 비밀번호 정책 등 필요 시 설정
     options.Password.RequireDigit = false;
     options.Password.RequiredLength = 6;
