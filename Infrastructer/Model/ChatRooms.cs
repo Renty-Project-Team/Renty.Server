@@ -12,11 +12,11 @@
         public required int BuyerUnreadCount { get; set; }
         public required DateTime CreatedAt { get; set; }
         public required DateTime UpdatedAt { get; set; }
+        public DateTime? DeletedAt { get; set; }
 
-
-        public required Items Item { get; set; }
-        public required Users Seller { get; set; }
-        public required Users Buyer { get; set; }
+        public Items Item { get; set; }
+        public Users Seller { get; set; }
+        public Users Buyer { get; set; }
         public ChatMessages? LastMessage { get; set; }
         public List<ChatMessages> Messages { get; set; } = [];
     }
