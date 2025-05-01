@@ -21,6 +21,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddMemoryCache();
 
 // --- Options Pattern 설정 추가 ---
 builder.Services.Configure<Settings>(
@@ -31,7 +32,7 @@ builder.Services.Configure<Settings>(
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductUploadRepository, ProductUploadRepository>();
 builder.Services.AddScoped<IProductFindRepository, ProductFindRepository>();
-builder.Services.AddScoped<IChatRepository, ChatRepository>();
+builder.Services.AddScoped<IChatCreateRepository, ChatCreateRepository>();
 
 
 // enum을 문자열로 변환하는 JsonStringEnumConverter 추가

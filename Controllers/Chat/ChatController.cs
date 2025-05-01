@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Renty.Server.Domain.Chat;
 using Renty.Server.Exceptions;
-using Renty.Server.Infrastructer.Model;
-using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace Renty.Server.Controllers.Chat
@@ -11,7 +10,7 @@ namespace Renty.Server.Controllers.Chat
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class ChatController(IChatRepository chatRepo) : ControllerBase
+    public class ChatController(IChatCreateRepository chatRepo, IMemoryCache memoryCache) : ControllerBase
     {
         [HttpPost("Create")]
         public async Task<IActionResult> CreateRoom(ChatRoomCreateRequest request)
@@ -19,7 +18,7 @@ namespace Renty.Server.Controllers.Chat
             try
             {
                 var buyerId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-                await new ChatManager().CreateRoom(request.ItemId, buyerId, chatRepo);
+                await new ChatManager(memoryCache).CreateItemChatRoom(request.ItemId, buyerId, chatRepo);
                 return Ok(new { Message = "채팅방이 생성되었습니다.", Status = "created" });
             }
             catch (HasChatRoomException)
