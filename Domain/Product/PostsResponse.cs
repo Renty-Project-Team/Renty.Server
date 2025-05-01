@@ -5,6 +5,7 @@ namespace Renty.Server.Domain.Product
     public class PostsResponse
     {
         public required int Id { get; set; }
+        public required string UserName { get; set; }
         public required string Title { get; set; }
         public required decimal Price { get; set; }
         public required decimal Deposit { get; set; }

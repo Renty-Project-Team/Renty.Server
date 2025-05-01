@@ -37,6 +37,7 @@ namespace Renty.Server.Infrastructer.Product
                 .Select(i => new PostsResponse()
                 {
                     Id = i.Id,
+                    UserName = i.Seller.UserName!,
                     Title = i.Title,
                     Price = i.Price,
                     PriceUnit = i.PriceUnit,

@@ -27,7 +27,11 @@ namespace Renty.Server.Controllers.Product
         {
             return await findRepo.Take(request, 20) switch
             {
-                var posts when posts.Count == 0 => NotFound(new { Message = "상품이 없습니다." }),
+                var posts when posts.Count == 0 => NotFound(new ProblemDetails()
+                {
+                    Status = 404,
+                    Detail = "조건을 만족하는 게시글이 없습니다."
+                }),
                 var posts => Ok(posts)
             };
         }
