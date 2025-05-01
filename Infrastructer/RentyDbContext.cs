@@ -13,6 +13,7 @@ namespace Renty.Server.Infrastructer
         public DbSet<ItemImages> ItemImages { get; set; }
         public DbSet<Categorys> Categorys { get; set; }
         public DbSet<ChatRooms> ChatRooms { get; set; }
+        public DbSet<ChatPlayers> ChatPlayers { get; set; }
         public DbSet<ChatMessages> ChatMessages { get; set; }
         public DbSet<TradeOffers> TradeOffers { get; set; }
         public DbSet<Transactions> Transactions { get; set; }
@@ -89,12 +90,6 @@ namespace Renty.Server.Infrastructer
                 .HasIndex(c => c.ItemId);
 
             modelBuilder.Entity<ChatRooms>()
-                .HasIndex(c => c.SellerId);
-
-            modelBuilder.Entity<ChatRooms>()
-                .HasIndex(c => c.BuyerId);
-
-            modelBuilder.Entity<ChatRooms>()
                 .HasQueryFilter(room => room.DeletedAt == null);
 
             modelBuilder.Entity<ChatRooms>()
@@ -105,25 +100,31 @@ namespace Renty.Server.Infrastructer
                 .IsRequired(true);
 
             modelBuilder.Entity<ChatRooms>()
-                .HasOne(c => c.Seller)
-                .WithMany(u => u.SellerChats)
-                .HasForeignKey(c => c.SellerId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .IsRequired(true);
-
-            modelBuilder.Entity<ChatRooms>()
-                .HasOne(c => c.Buyer)
-                .WithMany(u => u.BuyerChats)
-                .HasForeignKey(c => c.BuyerId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .IsRequired(true);
-
-            modelBuilder.Entity<ChatRooms>()
                 .HasOne(c => c.LastMessage)
                 .WithOne()
                 .HasForeignKey<ChatRooms>(c => c.LastMessageId)
                 .OnDelete(DeleteBehavior.SetNull)
                 .IsRequired(false);
+
+            modelBuilder.Entity<ChatPlayers>()
+                .HasIndex(cp => new { cp.ChatRoomId, cp.UserId });
+
+            modelBuilder.Entity<ChatPlayers>()
+                .HasIndex(cp => cp.UserId);
+
+            modelBuilder.Entity<ChatPlayers>()
+                .HasOne(cp => cp.ChatRoom)
+                .WithMany(c => c.Players)
+                .HasForeignKey(cp => cp.ChatRoomId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired(true);
+
+            modelBuilder.Entity<ChatPlayers>()
+                .HasOne(cp => cp.User)
+                .WithMany(u => u.ChatPlayers)
+                .HasForeignKey(cp => cp.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired(true);
 
             modelBuilder.Entity<ChatMessages>()
                 .HasIndex(cm => cm.ChatRoomId);
@@ -132,27 +133,17 @@ namespace Renty.Server.Infrastructer
                 .HasIndex(cm => cm.SenderId);
 
             modelBuilder.Entity<ChatMessages>()
-                .HasIndex(cm => cm.ReceiverId);
-
-            modelBuilder.Entity<ChatMessages>()
                 .HasOne(cm => cm.ChatRoom)
                 .WithMany(c => c.Messages)
                 .HasForeignKey(cm => cm.ChatRoomId)
-                .OnDelete(DeleteBehavior.SetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired(true);
 
             modelBuilder.Entity<ChatMessages>()
                 .HasOne(cm => cm.Sender)
-                .WithMany()
+                .WithMany(cp => cp.Messages)
                 .HasForeignKey(cm => cm.SenderId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .IsRequired(true);
-
-            modelBuilder.Entity<ChatMessages>()
-                .HasOne(cm => cm.Receiver)
-                .WithMany()
-                .HasForeignKey(cm => cm.ReceiverId)
-                .OnDelete(DeleteBehavior.SetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired(true);
 
             modelBuilder.Entity<ChatMessages>()

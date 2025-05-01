@@ -31,10 +31,9 @@ namespace Renty.Server.Infrastructer.Model
         public int TotalIncome { get; set; }
 
         public List<Items> Items { get; set; } = [];
-        public List<ChatRooms> SellerChats { get; set; } = [];
-        public List<ChatRooms> BuyerChats { get; set; } = [];
         public List<TradeOffers> ProspectiveRentalList { get; set; } = [];
         public List<Transactions> RentalHistory { get; set; } = [];
         public List<WishList> WishLists { get; set; } = [];
+        public List<ChatPlayers> ChatPlayers { get; set; } = [];
     }
 }

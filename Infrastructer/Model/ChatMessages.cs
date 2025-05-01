@@ -11,16 +11,14 @@
     public class ChatMessages
     {
         public int Id { get; set; }
-        public int? ChatRoomId { get; set; }
-        public string? SenderId { get; set; }
-        public string? ReceiverId { get; set; }
+        public required int ChatRoomId { get; set; }
+        public required int SenderId { get; set; }
         public required string Content { get; set; }
         public required MessageType Type { get; set; }
         public required DateTime ReadAt { get; set; }
         public required DateTime CreatedAt { get; set; }
 
         public required ChatRooms ChatRoom { get; set; }
-        public required Users Sender { get; set; }
-        public required Users Receiver { get; set; }
+        public required ChatPlayers Sender { get; set; }
     }
 }
