@@ -10,6 +10,11 @@ namespace Renty.Server.Auth.Infrastructer
     public class UserRepository(UserManager<Users> userManager,
         SignInManager<Users> signInManager) : IUserRepository
     {
+        public async Task<Users?> FindUserOnlyBy(string id)
+        {
+            return await userManager.FindByIdAsync(id);
+        }
+
         public async Task Register(RegisterRequest request)
         {
             var user = new Users

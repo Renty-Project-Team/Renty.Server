@@ -36,6 +36,18 @@ namespace Renty.Server.Chat.Controller
             {
                 return BadRequest(new { Message = "자기 자신과 채팅방을 생성할 수 없습니다." });
             }
+            catch (UserNotFoundException)
+            {
+                return BadRequest(new { Message = "게시글 작성자를 찾을 수 없습니다." });
+            }
+        }
+
+        [HttpGet("RoomList")]
+        public async Task<ActionResult<ICollection<ChatRoomResponce>>> GetRoomList()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var rooms = await roomService.GetUserChatRooms(userId);
+            return Ok(new { Rooms = rooms });
         }
     }
 }

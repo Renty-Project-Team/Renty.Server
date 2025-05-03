@@ -36,5 +36,6 @@ namespace Renty.Server.Model
         public List<TradeOffers> ProspectiveRentalList { get; set; } = [];
         public List<Transactions> RentalHistory { get; set; } = [];
         public List<WishList> WishLists { get; set; } = [];
+        public List<ChatUsers> ChatUsers { get; set; } = [];
     }
 }

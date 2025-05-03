@@ -12,6 +12,7 @@ namespace Renty.Server.Chat.Domain
 
         public List<ChatMessages> Messages { get; set; } = [];
         public ChatRooms ChatRoom { get; set; }
+        public Users User { get; set; }
 
         public bool Equals(string id)
         {

@@ -32,6 +32,9 @@ namespace Renty.Server
                 .Property(u => u.State)
                 .HasConversion<string>();
 
+            modelBuilder.Entity<Users>()
+                .HasQueryFilter(user => user.DeletedAt == null);
+
             modelBuilder.Entity<Items>()
                 .Property(i => i.PriceUnit)
                 .HasConversion<string>();
@@ -120,6 +123,13 @@ namespace Renty.Server
                 .HasOne(c => c.ChatRoom)
                 .WithMany(cr => cr.ChatUsers)
                 .HasForeignKey(c => c.ChatRoomId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired(true);
+
+            modelBuilder.Entity<ChatUsers>()
+                .HasOne(c => c.User)
+                .WithMany(u => u.ChatUsers)
+                .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired(true);
 
