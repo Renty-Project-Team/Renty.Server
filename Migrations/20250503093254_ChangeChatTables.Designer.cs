@@ -4,14 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Renty.Server;
 
 #nullable disable
 
 namespace Renty.Server.Migrations
 {
     [DbContext(typeof(RentyDbContext))]
-    [Migration("20250416145136_AddCategorysSeed")]
-    partial class AddCategorysSeed
+    [Migration("20250503093254_ChangeChatTables")]
+    partial class ChangeChatTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -162,7 +163,330 @@ namespace Renty.Server.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.Categorys", b =>
+            modelBuilder.Entity("Renty.Server.Chat.Domain.ChatMessages", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChatRoomId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("ReadAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SenderId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatRoomId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("ChatMessages");
+                });
+
+            modelBuilder.Entity("Renty.Server.Chat.Domain.ChatRooms", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChatCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("LastMessageId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("LastMessageId")
+                        .IsUnique();
+
+                    b.HasIndex("UpdatedAt");
+
+                    b.ToTable("ChatRooms");
+                });
+
+            modelBuilder.Entity("Renty.Server.Chat.Domain.ChatUsers", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChatRoomId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("JoinedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("LeftAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("ChatRoomId", "UserId");
+
+                    b.ToTable("ChatUsers");
+                });
+
+            modelBuilder.Entity("Renty.Server.Model.TradeOffers", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("AcceptedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("BorrowStartAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("BuyerId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("CanceledAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("FinalPrice")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("ReturnAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("SecurityDeposit")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UnitOfTime")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BuyerId");
+
+                    b.HasIndex("ItemId");
+
+                    b.ToTable("TradeOffers");
+                });
+
+            modelBuilder.Entity("Renty.Server.Model.Transactions", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("BorrowStartAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("BuyerId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("FinalPrice")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("FinalSecurityDeposit")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("ReturnAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BuyerId");
+
+                    b.HasIndex("ItemId");
+
+                    b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("Renty.Server.Model.Users", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AccountNumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("LastLoginAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("TEXT");
+
+                    b.Property<float>("MannerScore")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ProfileImage")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Provider")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("TotalIncome")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Renty.Server.Model.WishList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("WishLists");
+                });
+
+            modelBuilder.Entity("Renty.Server.Product.Domain.Categorys", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -241,98 +565,7 @@ namespace Renty.Server.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.ChatMessages", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ChatRoomId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("ReadAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ReceiverId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SenderId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChatRoomId");
-
-                    b.HasIndex("ReceiverId");
-
-                    b.HasIndex("SenderId");
-
-                    b.ToTable("ChatMessages");
-                });
-
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.ChatRooms", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("BuyerId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("BuyerUnreadCount")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ChatCount")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("ItemId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("LastMessageId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("SellerId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("SellerUnreadCount")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BuyerId");
-
-                    b.HasIndex("ItemId");
-
-                    b.HasIndex("LastMessageId")
-                        .IsUnique();
-
-                    b.HasIndex("SellerId");
-
-                    b.ToTable("ChatRooms");
-                });
-
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.ItemImages", b =>
+            modelBuilder.Entity("Renty.Server.Product.Domain.ItemImages", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -358,7 +591,7 @@ namespace Renty.Server.Migrations
                     b.ToTable("ItemImages");
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.Items", b =>
+            modelBuilder.Entity("Renty.Server.Product.Domain.Items", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -380,6 +613,10 @@ namespace Renty.Server.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("PriceUnit")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<decimal>("SecurityDeposit")
                         .HasColumnType("TEXT");
 
@@ -392,10 +629,6 @@ namespace Renty.Server.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UnitOfTime")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -412,246 +645,21 @@ namespace Renty.Server.Migrations
 
                     b.HasIndex("SellerId");
 
+                    b.HasIndex("CreatedAt", "Id")
+                        .IsDescending();
+
                     b.ToTable("Items");
-                });
-
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.TradeOffers", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("AcceptedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("BorrowStartAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("BuyerId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("CanceledAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("FinalPrice")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("ItemId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("ReturnAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("SecurityDeposit")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("UnitOfTime")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BuyerId");
-
-                    b.HasIndex("ItemId");
-
-                    b.ToTable("TradeOffers");
-                });
-
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.Transactions", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("BorrowStartAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("BuyerId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("FinalPrice")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("FinalSecurityDeposit")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("ItemId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("ReturnAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BuyerId");
-
-                    b.HasIndex("ItemId");
-
-                    b.ToTable("Transactions");
-                });
-
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.Users", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("AccountNumber")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("LastLoginAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("TEXT");
-
-                    b.Property<float>("MannerScore")
-                        .HasColumnType("REAL");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Nickname")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ProfileImage")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Provider")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("TotalIncome")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex");
-
-                    b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.WishList", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("ItemId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ItemId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("WishLists");
                 });
 
             modelBuilder.Entity("CategorysItems", b =>
                 {
-                    b.HasOne("Renty.Server.Infrastructer.Model.Categorys", null)
+                    b.HasOne("Renty.Server.Product.Domain.Categorys", null)
                         .WithMany()
                         .HasForeignKey("CategoriesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Renty.Server.Infrastructer.Model.Items", null)
+                    b.HasOne("Renty.Server.Product.Domain.Items", null)
                         .WithMany()
                         .HasForeignKey("ItemsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -669,7 +677,7 @@ namespace Renty.Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Renty.Server.Infrastructer.Model.Users", null)
+                    b.HasOne("Renty.Server.Model.Users", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -678,7 +686,7 @@ namespace Renty.Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Renty.Server.Infrastructer.Model.Users", null)
+                    b.HasOne("Renty.Server.Model.Users", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -693,7 +701,7 @@ namespace Renty.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Renty.Server.Infrastructer.Model.Users", null)
+                    b.HasOne("Renty.Server.Model.Users", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -702,105 +710,70 @@ namespace Renty.Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Renty.Server.Infrastructer.Model.Users", null)
+                    b.HasOne("Renty.Server.Model.Users", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.ChatMessages", b =>
+            modelBuilder.Entity("Renty.Server.Chat.Domain.ChatMessages", b =>
                 {
-                    b.HasOne("Renty.Server.Infrastructer.Model.ChatRooms", "ChatRoom")
+                    b.HasOne("Renty.Server.Chat.Domain.ChatRooms", "ChatRoom")
                         .WithMany("Messages")
                         .HasForeignKey("ChatRoomId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Renty.Server.Infrastructer.Model.Users", "Receiver")
-                        .WithMany()
-                        .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
-
-                    b.HasOne("Renty.Server.Infrastructer.Model.Users", "Sender")
-                        .WithMany()
+                    b.HasOne("Renty.Server.Chat.Domain.ChatUsers", "Sender")
+                        .WithMany("Messages")
                         .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ChatRoom");
 
-                    b.Navigation("Receiver");
-
                     b.Navigation("Sender");
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.ChatRooms", b =>
+            modelBuilder.Entity("Renty.Server.Chat.Domain.ChatRooms", b =>
                 {
-                    b.HasOne("Renty.Server.Infrastructer.Model.Users", "Buyer")
-                        .WithMany("BuyerChats")
-                        .HasForeignKey("BuyerId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
-
-                    b.HasOne("Renty.Server.Infrastructer.Model.Items", "Item")
+                    b.HasOne("Renty.Server.Product.Domain.Items", "Item")
                         .WithMany("Chats")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Renty.Server.Infrastructer.Model.ChatMessages", "LastMessage")
+                    b.HasOne("Renty.Server.Chat.Domain.ChatMessages", "LastMessage")
                         .WithOne()
-                        .HasForeignKey("Renty.Server.Infrastructer.Model.ChatRooms", "LastMessageId")
+                        .HasForeignKey("Renty.Server.Chat.Domain.ChatRooms", "LastMessageId")
                         .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("Renty.Server.Infrastructer.Model.Users", "Seller")
-                        .WithMany("SellerChats")
-                        .HasForeignKey("SellerId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
-
-                    b.Navigation("Buyer");
 
                     b.Navigation("Item");
 
                     b.Navigation("LastMessage");
-
-                    b.Navigation("Seller");
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.ItemImages", b =>
+            modelBuilder.Entity("Renty.Server.Chat.Domain.ChatUsers", b =>
                 {
-                    b.HasOne("Renty.Server.Infrastructer.Model.Items", "Item")
-                        .WithMany("ItemImages")
-                        .HasForeignKey("ItemId")
+                    b.HasOne("Renty.Server.Chat.Domain.ChatRooms", "ChatRoom")
+                        .WithMany("ChatUsers")
+                        .HasForeignKey("ChatRoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Item");
+                    b.Navigation("ChatRoom");
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.Items", b =>
+            modelBuilder.Entity("Renty.Server.Model.TradeOffers", b =>
                 {
-                    b.HasOne("Renty.Server.Infrastructer.Model.Users", "Seller")
-                        .WithMany("Items")
-                        .HasForeignKey("SellerId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
-
-                    b.Navigation("Seller");
-                });
-
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.TradeOffers", b =>
-                {
-                    b.HasOne("Renty.Server.Infrastructer.Model.Users", "Buyer")
+                    b.HasOne("Renty.Server.Model.Users", "Buyer")
                         .WithMany("ProspectiveRentalList")
                         .HasForeignKey("BuyerId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
-                    b.HasOne("Renty.Server.Infrastructer.Model.Items", "Item")
+                    b.HasOne("Renty.Server.Product.Domain.Items", "Item")
                         .WithMany("TradeOffers")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -811,15 +784,15 @@ namespace Renty.Server.Migrations
                     b.Navigation("Item");
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.Transactions", b =>
+            modelBuilder.Entity("Renty.Server.Model.Transactions", b =>
                 {
-                    b.HasOne("Renty.Server.Infrastructer.Model.Users", "Buyer")
+                    b.HasOne("Renty.Server.Model.Users", "Buyer")
                         .WithMany("RentalHistory")
                         .HasForeignKey("BuyerId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
-                    b.HasOne("Renty.Server.Infrastructer.Model.Items", "Item")
+                    b.HasOne("Renty.Server.Product.Domain.Items", "Item")
                         .WithMany("Transactions")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -830,15 +803,15 @@ namespace Renty.Server.Migrations
                     b.Navigation("Item");
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.WishList", b =>
+            modelBuilder.Entity("Renty.Server.Model.WishList", b =>
                 {
-                    b.HasOne("Renty.Server.Infrastructer.Model.Items", "Item")
+                    b.HasOne("Renty.Server.Product.Domain.Items", "Item")
                         .WithMany()
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
-                    b.HasOne("Renty.Server.Infrastructer.Model.Users", "User")
+                    b.HasOne("Renty.Server.Model.Users", "User")
                         .WithMany("WishLists")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -849,12 +822,52 @@ namespace Renty.Server.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.ChatRooms", b =>
+            modelBuilder.Entity("Renty.Server.Product.Domain.ItemImages", b =>
+                {
+                    b.HasOne("Renty.Server.Product.Domain.Items", "Item")
+                        .WithMany("ItemImages")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Item");
+                });
+
+            modelBuilder.Entity("Renty.Server.Product.Domain.Items", b =>
+                {
+                    b.HasOne("Renty.Server.Model.Users", "Seller")
+                        .WithMany("Items")
+                        .HasForeignKey("SellerId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
+
+                    b.Navigation("Seller");
+                });
+
+            modelBuilder.Entity("Renty.Server.Chat.Domain.ChatRooms", b =>
+                {
+                    b.Navigation("ChatUsers");
+
+                    b.Navigation("Messages");
+                });
+
+            modelBuilder.Entity("Renty.Server.Chat.Domain.ChatUsers", b =>
                 {
                     b.Navigation("Messages");
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.Items", b =>
+            modelBuilder.Entity("Renty.Server.Model.Users", b =>
+                {
+                    b.Navigation("Items");
+
+                    b.Navigation("ProspectiveRentalList");
+
+                    b.Navigation("RentalHistory");
+
+                    b.Navigation("WishLists");
+                });
+
+            modelBuilder.Entity("Renty.Server.Product.Domain.Items", b =>
                 {
                     b.Navigation("Chats");
 
@@ -863,21 +876,6 @@ namespace Renty.Server.Migrations
                     b.Navigation("TradeOffers");
 
                     b.Navigation("Transactions");
-                });
-
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.Users", b =>
-                {
-                    b.Navigation("BuyerChats");
-
-                    b.Navigation("Items");
-
-                    b.Navigation("ProspectiveRentalList");
-
-                    b.Navigation("RentalHistory");
-
-                    b.Navigation("SellerChats");
-
-                    b.Navigation("WishLists");
                 });
 #pragma warning restore 612, 618
         }

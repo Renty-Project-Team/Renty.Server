@@ -3,7 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Renty.Server.Infrastructer;
+using Renty.Server;
 
 #nullable disable
 
@@ -160,86 +160,7 @@ namespace Renty.Server.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.Categorys", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name");
-
-                    b.ToTable("Categorys");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "ClothingAndFashion"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Electronics"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "FurnitureAndInterior"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Beauty"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Books"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Stationery"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "CarAccessories"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = "Sports"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Name = "InfantsAndChildren"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Name = "PetSupplies"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Name = "HealthAndMedical"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            Name = "Hobbies"
-                        });
-                });
-
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.ChatMessages", b =>
+            modelBuilder.Entity("Renty.Server.Chat.Domain.ChatMessages", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -255,7 +176,7 @@ namespace Renty.Server.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("ReadAt")
+                    b.Property<DateTime?>("ReadAt")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("SenderId")
@@ -274,35 +195,7 @@ namespace Renty.Server.Migrations
                     b.ToTable("ChatMessages");
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.ChatPlayers", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ChatRoomId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("JoinedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("LeftAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("ChatRoomId", "UserId");
-
-                    b.ToTable("ChatPlayers");
-                });
-
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.ChatRooms", b =>
+            modelBuilder.Entity("Renty.Server.Chat.Domain.ChatRooms", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -333,96 +226,40 @@ namespace Renty.Server.Migrations
                     b.HasIndex("LastMessageId")
                         .IsUnique();
 
+                    b.HasIndex("UpdatedAt");
+
                     b.ToTable("ChatRooms");
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.ItemImages", b =>
+            modelBuilder.Entity("Renty.Server.Chat.Domain.ChatUsers", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<int>("ChatRoomId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("JoinedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ImageUrl")
+                    b.Property<DateTime?>("LeftAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("ItemId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ItemId");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("ItemImages");
+                    b.HasIndex("ChatRoomId", "UserId");
+
+                    b.ToTable("ChatUsers");
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.Items", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ChatCount")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PriceUnit")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("SecurityDeposit")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SellerId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("ViewCount")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("WishCount")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SellerId");
-
-                    b.HasIndex("CreatedAt", "Id")
-                        .IsDescending();
-
-                    b.ToTable("Items");
-                });
-
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.TradeOffers", b =>
+            modelBuilder.Entity("Renty.Server.Model.TradeOffers", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -478,7 +315,7 @@ namespace Renty.Server.Migrations
                     b.ToTable("TradeOffers");
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.Transactions", b =>
+            modelBuilder.Entity("Renty.Server.Model.Transactions", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -522,7 +359,7 @@ namespace Renty.Server.Migrations
                     b.ToTable("Transactions");
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.Users", b =>
+            modelBuilder.Entity("Renty.Server.Model.Users", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
@@ -621,7 +458,7 @@ namespace Renty.Server.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.WishList", b =>
+            modelBuilder.Entity("Renty.Server.Model.WishList", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -646,15 +483,180 @@ namespace Renty.Server.Migrations
                     b.ToTable("WishLists");
                 });
 
+            modelBuilder.Entity("Renty.Server.Product.Domain.Categorys", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name");
+
+                    b.ToTable("Categorys");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "ClothingAndFashion"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Electronics"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "FurnitureAndInterior"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Beauty"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Books"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Stationery"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "CarAccessories"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Name = "Sports"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Name = "InfantsAndChildren"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Name = "PetSupplies"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Name = "HealthAndMedical"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Name = "Hobbies"
+                        });
+                });
+
+            modelBuilder.Entity("Renty.Server.Product.Domain.ItemImages", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemId");
+
+                    b.ToTable("ItemImages");
+                });
+
+            modelBuilder.Entity("Renty.Server.Product.Domain.Items", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ChatCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PriceUnit")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("SecurityDeposit")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SellerId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ViewCount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("WishCount")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SellerId");
+
+                    b.HasIndex("CreatedAt", "Id")
+                        .IsDescending();
+
+                    b.ToTable("Items");
+                });
+
             modelBuilder.Entity("CategorysItems", b =>
                 {
-                    b.HasOne("Renty.Server.Infrastructer.Model.Categorys", null)
+                    b.HasOne("Renty.Server.Product.Domain.Categorys", null)
                         .WithMany()
                         .HasForeignKey("CategoriesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Renty.Server.Infrastructer.Model.Items", null)
+                    b.HasOne("Renty.Server.Product.Domain.Items", null)
                         .WithMany()
                         .HasForeignKey("ItemsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -672,7 +674,7 @@ namespace Renty.Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Renty.Server.Infrastructer.Model.Users", null)
+                    b.HasOne("Renty.Server.Model.Users", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -681,7 +683,7 @@ namespace Renty.Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Renty.Server.Infrastructer.Model.Users", null)
+                    b.HasOne("Renty.Server.Model.Users", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -696,7 +698,7 @@ namespace Renty.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Renty.Server.Infrastructer.Model.Users", null)
+                    b.HasOne("Renty.Server.Model.Users", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -705,22 +707,22 @@ namespace Renty.Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Renty.Server.Infrastructer.Model.Users", null)
+                    b.HasOne("Renty.Server.Model.Users", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.ChatMessages", b =>
+            modelBuilder.Entity("Renty.Server.Chat.Domain.ChatMessages", b =>
                 {
-                    b.HasOne("Renty.Server.Infrastructer.Model.ChatRooms", "ChatRoom")
+                    b.HasOne("Renty.Server.Chat.Domain.ChatRooms", "ChatRoom")
                         .WithMany("Messages")
                         .HasForeignKey("ChatRoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Renty.Server.Infrastructer.Model.ChatPlayers", "Sender")
+                    b.HasOne("Renty.Server.Chat.Domain.ChatUsers", "Sender")
                         .WithMany("Messages")
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -731,36 +733,17 @@ namespace Renty.Server.Migrations
                     b.Navigation("Sender");
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.ChatPlayers", b =>
+            modelBuilder.Entity("Renty.Server.Chat.Domain.ChatRooms", b =>
                 {
-                    b.HasOne("Renty.Server.Infrastructer.Model.ChatRooms", "ChatRoom")
-                        .WithMany("Players")
-                        .HasForeignKey("ChatRoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Renty.Server.Infrastructer.Model.Users", "User")
-                        .WithMany("ChatPlayers")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ChatRoom");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.ChatRooms", b =>
-                {
-                    b.HasOne("Renty.Server.Infrastructer.Model.Items", "Item")
+                    b.HasOne("Renty.Server.Product.Domain.Items", "Item")
                         .WithMany("Chats")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Renty.Server.Infrastructer.Model.ChatMessages", "LastMessage")
+                    b.HasOne("Renty.Server.Chat.Domain.ChatMessages", "LastMessage")
                         .WithOne()
-                        .HasForeignKey("Renty.Server.Infrastructer.Model.ChatRooms", "LastMessageId")
+                        .HasForeignKey("Renty.Server.Chat.Domain.ChatRooms", "LastMessageId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Item");
@@ -768,37 +751,26 @@ namespace Renty.Server.Migrations
                     b.Navigation("LastMessage");
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.ItemImages", b =>
+            modelBuilder.Entity("Renty.Server.Chat.Domain.ChatUsers", b =>
                 {
-                    b.HasOne("Renty.Server.Infrastructer.Model.Items", "Item")
-                        .WithMany("ItemImages")
-                        .HasForeignKey("ItemId")
+                    b.HasOne("Renty.Server.Chat.Domain.ChatRooms", "ChatRoom")
+                        .WithMany("ChatUsers")
+                        .HasForeignKey("ChatRoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Item");
+                    b.Navigation("ChatRoom");
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.Items", b =>
+            modelBuilder.Entity("Renty.Server.Model.TradeOffers", b =>
                 {
-                    b.HasOne("Renty.Server.Infrastructer.Model.Users", "Seller")
-                        .WithMany("Items")
-                        .HasForeignKey("SellerId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
-
-                    b.Navigation("Seller");
-                });
-
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.TradeOffers", b =>
-                {
-                    b.HasOne("Renty.Server.Infrastructer.Model.Users", "Buyer")
+                    b.HasOne("Renty.Server.Model.Users", "Buyer")
                         .WithMany("ProspectiveRentalList")
                         .HasForeignKey("BuyerId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
-                    b.HasOne("Renty.Server.Infrastructer.Model.Items", "Item")
+                    b.HasOne("Renty.Server.Product.Domain.Items", "Item")
                         .WithMany("TradeOffers")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -809,15 +781,15 @@ namespace Renty.Server.Migrations
                     b.Navigation("Item");
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.Transactions", b =>
+            modelBuilder.Entity("Renty.Server.Model.Transactions", b =>
                 {
-                    b.HasOne("Renty.Server.Infrastructer.Model.Users", "Buyer")
+                    b.HasOne("Renty.Server.Model.Users", "Buyer")
                         .WithMany("RentalHistory")
                         .HasForeignKey("BuyerId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
-                    b.HasOne("Renty.Server.Infrastructer.Model.Items", "Item")
+                    b.HasOne("Renty.Server.Product.Domain.Items", "Item")
                         .WithMany("Transactions")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -828,15 +800,15 @@ namespace Renty.Server.Migrations
                     b.Navigation("Item");
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.WishList", b =>
+            modelBuilder.Entity("Renty.Server.Model.WishList", b =>
                 {
-                    b.HasOne("Renty.Server.Infrastructer.Model.Items", "Item")
+                    b.HasOne("Renty.Server.Product.Domain.Items", "Item")
                         .WithMany()
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
-                    b.HasOne("Renty.Server.Infrastructer.Model.Users", "User")
+                    b.HasOne("Renty.Server.Model.Users", "User")
                         .WithMany("WishLists")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -847,19 +819,52 @@ namespace Renty.Server.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.ChatPlayers", b =>
+            modelBuilder.Entity("Renty.Server.Product.Domain.ItemImages", b =>
+                {
+                    b.HasOne("Renty.Server.Product.Domain.Items", "Item")
+                        .WithMany("ItemImages")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Item");
+                });
+
+            modelBuilder.Entity("Renty.Server.Product.Domain.Items", b =>
+                {
+                    b.HasOne("Renty.Server.Model.Users", "Seller")
+                        .WithMany("Items")
+                        .HasForeignKey("SellerId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
+
+                    b.Navigation("Seller");
+                });
+
+            modelBuilder.Entity("Renty.Server.Chat.Domain.ChatRooms", b =>
+                {
+                    b.Navigation("ChatUsers");
+
+                    b.Navigation("Messages");
+                });
+
+            modelBuilder.Entity("Renty.Server.Chat.Domain.ChatUsers", b =>
                 {
                     b.Navigation("Messages");
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.ChatRooms", b =>
+            modelBuilder.Entity("Renty.Server.Model.Users", b =>
                 {
-                    b.Navigation("Messages");
+                    b.Navigation("Items");
 
-                    b.Navigation("Players");
+                    b.Navigation("ProspectiveRentalList");
+
+                    b.Navigation("RentalHistory");
+
+                    b.Navigation("WishLists");
                 });
 
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.Items", b =>
+            modelBuilder.Entity("Renty.Server.Product.Domain.Items", b =>
                 {
                     b.Navigation("Chats");
 
@@ -868,19 +873,6 @@ namespace Renty.Server.Migrations
                     b.Navigation("TradeOffers");
 
                     b.Navigation("Transactions");
-                });
-
-            modelBuilder.Entity("Renty.Server.Infrastructer.Model.Users", b =>
-                {
-                    b.Navigation("ChatPlayers");
-
-                    b.Navigation("Items");
-
-                    b.Navigation("ProspectiveRentalList");
-
-                    b.Navigation("RentalHistory");
-
-                    b.Navigation("WishLists");
                 });
 #pragma warning restore 612, 618
         }

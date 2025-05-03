@@ -2,15 +2,18 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
-using Renty.Server.Domain.Auth;
-using Renty.Server.Domain.Chat;
-using Renty.Server.Domain.Product;
+using Renty.Server;
+using Renty.Server.Auth.Domain;
+using Renty.Server.Auth.Infrastructer;
+using Renty.Server.Chat.Controller;
+using Renty.Server.Chat.Domain.Repository;
+using Renty.Server.Chat.Infrastructer;
+using Renty.Server.Chat.Service;
 using Renty.Server.Global;
-using Renty.Server.Infrastructer;
-using Renty.Server.Infrastructer.Auth;
-using Renty.Server.Infrastructer.Chat;
-using Renty.Server.Infrastructer.Model;
-using Renty.Server.Infrastructer.Product;
+using Renty.Server.Model;
+using Renty.Server.Product.Domain.Repository;
+using Renty.Server.Product.Infrastructer;
+using Renty.Server.Product.Service;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +24,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSignalR();
 builder.Services.AddMemoryCache();
 
 // --- Options Pattern 설정 추가 ---
@@ -30,9 +34,12 @@ builder.Services.Configure<Settings>(
 
 // DI 클래스 연결
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IProductUploadRepository, ProductUploadRepository>();
-builder.Services.AddScoped<IProductFindRepository, ProductFindRepository>();
-builder.Services.AddScoped<IChatCreateRepository, ChatCreateRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
+builder.Services.AddScoped<UploadService>();
+builder.Services.AddScoped<ChatRoomService>();
 
 
 // enum을 문자열로 변환하는 JsonStringEnumConverter 추가
@@ -142,5 +149,6 @@ app.UseAuthentication(); // 요청의 쿠키를 확인하고 사용자 인증
 app.UseAuthorization(); // [Authorize] 특성 처리
 
 app.MapControllers();
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();
