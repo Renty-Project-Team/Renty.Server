@@ -8,7 +8,7 @@ using Renty.Server.Product.Domain.Repository;
 
 namespace Renty.Server.Product.Service
 {
-    public class UploadService(IProductRepository productRepo, IImageRepository imageRepo, ICategoryRepository categoryRepo)
+    public class ProductService(IProductRepository productRepo, IImageRepository imageRepo, ICategoryRepository categoryRepo)
     {
         private Items CreatePost(UploadRequest request, string userId, Categorys category, ICollection<string> imgUrls)
         {
@@ -43,13 +43,39 @@ namespace Renty.Server.Product.Service
             {
                 var imgUrls = await imageRepo.SaveImages(request.Images);
                 var item = CreatePost(request, userId, categorys, imgUrls);
-                await productRepo.Save(item);
+                productRepo.Add(item);
+                await productRepo.Save();
             }
             catch
             {
                 imageRepo.RemoveImages();
                 throw;
             }
+        }
+        
+        public async Task<DetailResponse> GetDetail(int itemId)
+        {
+            var item = await productRepo.FindBy(itemId) ?? throw new ItemNotFoundException();
+            item.ViewCount++;
+            await productRepo.Save();
+
+            return new DetailResponse()
+            {
+                ItemId = item.Id,
+                UserName = item.Seller.UserName!,
+                UserProfileImage = item.Seller.ProfileImage,
+                Title = item.Title,
+                CreatedAt = item.CreatedAt,
+                Price = item.Price,
+                PriceUnit = item.PriceUnit,
+                SecurityDeposit = item.SecurityDeposit,
+                ViewCount = item.ViewCount,
+                WishCount = item.WishCount,
+                Categories = [.. item.Categories.Select(c => c.Name)],
+                State = item.State,
+                Description = item.Description,
+                ImagesUrl = [.. item.ItemImages.OrderBy(img => img.Order).Select(img => img.ImageUrl)],
+            };
         }
     }
 }

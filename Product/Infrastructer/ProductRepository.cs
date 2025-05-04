@@ -7,7 +7,7 @@ namespace Renty.Server.Product.Infrastructer
 {
     public class ProductRepository(RentyDbContext dbContext) : IProductRepository
     {
-        public async Task<Items?> FindOnlyItemById(int itemId)
+        public async Task<Items?> FindOnlyItemBy(int itemId)
         {
             return await dbContext.Items.FirstOrDefaultAsync(i => i.Id == itemId);
         }
@@ -57,38 +57,22 @@ namespace Renty.Server.Product.Infrastructer
                 }).ToListAsync();
         }
 
-        public async Task<DetailResponse?> GetItemDetail(int itemId)
+        public async Task<Items?> FindBy(int itemId)
         {
-            var item = await dbContext.Items
+            return await dbContext.Items
                 .Include(i => i.Seller)
                 .Include(i => i.ItemImages)
                 .Include(i => i.Categories)
                 .FirstOrDefaultAsync(i => i.Id == itemId);
-
-            if (item == null) return null;
-            
-            return new DetailResponse()
-            {
-                ItemId = item.Id,
-                UserName = item.Seller.UserName!,
-                UserProfileImage = item.Seller.ProfileImage,
-                Title = item.Title,
-                CreatedAt = item.CreatedAt,
-                Price = item.Price,
-                PriceUnit = item.PriceUnit,
-                SecurityDeposit = item.SecurityDeposit,
-                ViewCount = item.ViewCount,
-                WishCount = item.WishCount,
-                Categories = [.. item.Categories.Select(c => c.Name)],
-                State = item.State,
-                Description = item.Description,
-                ImagesUrl = [.. item.ItemImages.OrderBy(img => img.Order).Select(img => img.ImageUrl)],
-            };
         }
 
-        public Task Save(Items item)
+        public void Add(Items item)
         {
             dbContext.Items.Add(item);
+        }
+
+        public Task Save()
+        {
             return dbContext.SaveChangesAsync();
         }
     }

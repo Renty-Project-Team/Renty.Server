@@ -67,7 +67,7 @@ namespace Renty.Server.Chat.Service
 
             try
             {
-                var item = await productRepo.FindOnlyItemById(itemId) ?? throw new ItemNotFoundException();
+                var item = await productRepo.FindOnlyItemBy(itemId) ?? throw new ItemNotFoundException();
                 if (item.SellerId == buyerId)
                 {
                     throw new SelfChatCreationException();

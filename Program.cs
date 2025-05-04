@@ -38,7 +38,7 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IChatRepository, ChatRepository>();
-builder.Services.AddScoped<UploadService>();
+builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<ChatRoomService>();
 
 

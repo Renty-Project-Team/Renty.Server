@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Renty.Server.Exceptions;
 using Renty.Server.Product.Domain.DTO;
 using Renty.Server.Product.Domain.Repository;
 using Renty.Server.Product.Service;
@@ -9,7 +10,7 @@ namespace Renty.Server.Product.Controller
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProductController(UploadService uploadService, IProductRepository product) : ControllerBase
+    public class ProductController(ProductService productService, IProductRepository product) : ControllerBase
     {
         [HttpPost("upload")]
         [Authorize]
@@ -18,7 +19,7 @@ namespace Renty.Server.Product.Controller
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
-            await uploadService.Upload(request, userId);
+            await productService.Upload(request, userId);
             return Ok(new { Message = "상품 등록을 성공했습니다." });
         }
 
@@ -39,16 +40,15 @@ namespace Renty.Server.Product.Controller
         [HttpGet("detail")]
         public async Task<ActionResult<DetailResponse>> GetPost([FromQuery] int itemId)
         {
-            var post = await product.GetItemDetail(itemId);
-            return post switch
+            try
             {
-                null => NotFound(new ProblemDetails()
-                {
-                    Status = 404,
-                    Detail = "존재하지 않는 게시글입니다."
-                }),
-                var posts => Ok(posts)
-            };
+                var post = await productService.GetDetail(itemId);
+                return Ok(post);
+            }
+            catch (ItemNotFoundException)
+            {
+                return NotFound(new ProblemDetails() { Status = 404, Detail = "존재하지 않는 게시글입니다." });
+            }
         }
     }
 }

@@ -4,9 +4,10 @@ namespace Renty.Server.Product.Domain.Repository
 {
     public interface IProductRepository
     {
-        Task<Items?> FindOnlyItemById(int itemId);
-        Task<DetailResponse?> GetItemDetail(int itemId);
-        Task Save(Items item);
+        void Add(Items item);
+        Task<Items?> FindBy(int itemId);
+        Task<Items?> FindOnlyItemBy(int itemId);
+        Task Save();
         Task<ICollection<PostsResponse>> Take(PostsRequest request, int takeCount);
     }
 }
