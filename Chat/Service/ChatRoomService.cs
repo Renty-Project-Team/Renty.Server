@@ -82,6 +82,7 @@ namespace Renty.Server.Chat.Service
                 room.JoinUser(CreateUser(buyerId));
                 
                 chatRepo.Add(room);
+                item.ChatCount++;
                 await chatRepo.Save();
             }
             finally
