@@ -35,5 +35,20 @@ namespace Renty.Server.Product.Controller
                 var posts => Ok(posts)
             };
         }
+
+        [HttpGet("detail")]
+        public async Task<ActionResult<DetailResponse>> GetPost([FromQuery] int itemId)
+        {
+            var post = await product.GetItemDetail(itemId);
+            return post switch
+            {
+                null => NotFound(new ProblemDetails()
+                {
+                    Status = 404,
+                    Detail = "존재하지 않는 게시글입니다."
+                }),
+                var posts => Ok(posts)
+            };
+        }
     }
 }

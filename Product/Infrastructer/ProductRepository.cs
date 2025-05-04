@@ -57,6 +57,35 @@ namespace Renty.Server.Product.Infrastructer
                 }).ToListAsync();
         }
 
+        public async Task<DetailResponse?> GetItemDetail(int itemId)
+        {
+            var item = await dbContext.Items
+                .Include(i => i.Seller)
+                .Include(i => i.ItemImages)
+                .Include(i => i.Categories)
+                .FirstOrDefaultAsync(i => i.Id == itemId);
+
+            if (item == null) return null;
+            
+            return new DetailResponse()
+            {
+                ItemId = item.Id,
+                UserName = item.Seller.UserName!,
+                UserProfileImage = item.Seller.ProfileImage,
+                Title = item.Title,
+                CreatedAt = item.CreatedAt,
+                Price = item.Price,
+                PriceUnit = item.PriceUnit,
+                SecurityDeposit = item.SecurityDeposit,
+                ViewCount = item.ViewCount,
+                WishCount = item.WishCount,
+                Categories = [.. item.Categories.Select(c => c.Name)],
+                State = item.State,
+                Description = item.Description,
+                ImagesUrl = [.. item.ItemImages.OrderBy(img => img.Order).Select(img => img.ImageUrl)],
+            };
+        }
+
         public Task Save(Items item)
         {
             dbContext.Items.Add(item);
