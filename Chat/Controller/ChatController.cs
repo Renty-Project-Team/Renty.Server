@@ -21,7 +21,8 @@ namespace Renty.Server.Chat.Controller
             try
             {
                 var buyerId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-                await roomService.CreateItemChatRoom(request.ItemId, buyerId);
+                var buyerName = User.FindFirstValue(ClaimTypes.Name)!;
+                await roomService.CreateItemChatRoom(request.ItemId, buyerId, buyerName);
                 return Ok(new { Message = "채팅방이 생성되었습니다.", Status = "created" });
             }
             catch (ChatRoomAlreadyExistsException)

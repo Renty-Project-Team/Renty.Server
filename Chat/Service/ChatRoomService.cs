@@ -34,31 +34,31 @@ namespace Renty.Server.Chat.Service
             return lazySemaphore!.Value;
         }
 
-        private ChatRooms CreateRoom(int itemId, string roomName)
+        private ChatRooms CreateRoom(int itemId)
         {
             var now = TimeHelper.GetKoreanTime();
 
             return new()
             {
                 ItemId = itemId,
-                RoomName = roomName,
                 ChatCount = 0,
                 CreatedAt = now,
                 UpdatedAt = now,
             };
         }
 
-        private ChatUsers CreateUser(string userId)
+        private ChatUsers CreateUser(string userId, string roomName)
         {
             var now = TimeHelper.GetKoreanTime();
             return new()
             {
+                RoomName = roomName,
                 UserId = userId,
                 JoinedAt = now,
             };
         }
 
-        public async Task CreateItemChatRoom(int itemId, string buyerId)
+        public async Task CreateItemChatRoom(int itemId, string buyerId, string buyerName)
         {
             string cacheKey = $"ChatRoom_{itemId}_{buyerId}";
             var semaphore = GetSemaphore(cacheKey);
@@ -78,9 +78,10 @@ namespace Renty.Server.Chat.Service
                 }
 
                 var seller = await userRepo.FindUserOnlyBy(item.SellerId) ?? throw new UserNotFoundException();
-                var room = CreateRoom(itemId, seller.UserName!);
-                room.JoinUser(CreateUser(buyerId));
-                
+                var room = CreateRoom(itemId);
+                room.JoinUser(CreateUser(buyerId, seller.UserName!));
+                room.JoinUser(CreateUser(item.SellerId, buyerName));
+
                 chatRepo.Add(room);
                 item.ChatCount++;
                 await chatRepo.Save();

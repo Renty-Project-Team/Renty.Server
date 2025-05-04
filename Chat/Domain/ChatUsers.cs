@@ -7,6 +7,7 @@ namespace Renty.Server.Chat.Domain
         public int Id { get; set; }
         public required string UserId { get; set; }
         public int ChatRoomId { get; set; }
+        public required string RoomName { get; set; }
         public required DateTime JoinedAt { get; set; }
         public DateTime? LeftAt { get; set; }
 

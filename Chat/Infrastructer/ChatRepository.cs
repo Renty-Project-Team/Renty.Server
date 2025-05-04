@@ -27,7 +27,7 @@ namespace Renty.Server.Chat.Infrastructer
                 .OrderByDescending(room => room.UpdatedAt)
                 .Select(room => new ChatRoomResponce
                 {
-                    RoomName = room.RoomName,
+                    RoomName = room.ChatUsers.First(user => user.UserId == userId).RoomName,
                     ChatRoomId = room.Id,
                     Message = room.LastMessage != null ? room.LastMessage.Content : null,
                     MessageType = room.LastMessage != null ? room.LastMessage.Type : null,
