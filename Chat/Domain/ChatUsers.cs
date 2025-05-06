@@ -9,6 +9,7 @@ namespace Renty.Server.Chat.Domain
         public int ChatRoomId { get; set; }
         public required string RoomName { get; set; }
         public required DateTime JoinedAt { get; set; }
+        public required DateTime LastReadAt { get; set; }
         public DateTime? LeftAt { get; set; }
 
         public List<ChatMessages> Messages { get; set; } = [];

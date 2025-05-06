@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Renty.Server;
 
@@ -10,9 +11,11 @@ using Renty.Server;
 namespace Renty.Server.Migrations
 {
     [DbContext(typeof(RentyDbContext))]
-    partial class RentyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250505104555_AddConversionTradeOffers")]
+    partial class AddConversionTradeOffers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.2");
@@ -188,10 +191,9 @@ namespace Renty.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SenderId");
+                    b.HasIndex("ChatRoomId");
 
-                    b.HasIndex("ChatRoomId", "CreatedAt")
-                        .IsDescending(false, true);
+                    b.HasIndex("SenderId");
 
                     b.ToTable("ChatMessages");
                 });
@@ -242,9 +244,6 @@ namespace Renty.Server.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("JoinedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("LastReadAt")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("LeftAt")

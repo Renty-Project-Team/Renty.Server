@@ -5,6 +5,7 @@ using Renty.Server.Chat.Domain;
 using Renty.Server.Global;
 using Renty.Server.Model;
 using Renty.Server.Product.Domain;
+using Renty.Server.Transaction.Domain;
 
 namespace Renty.Server
 {
@@ -134,7 +135,8 @@ namespace Renty.Server
                 .IsRequired(true);
 
             modelBuilder.Entity<ChatMessages>()
-                .HasIndex(cm => cm.ChatRoomId);
+                .HasIndex(cm => new { cm.ChatRoomId, cm.CreatedAt })
+                .IsDescending(false, true);
 
             modelBuilder.Entity<ChatMessages>()
                 .HasIndex(cm => cm.SenderId);
@@ -158,7 +160,7 @@ namespace Renty.Server
                 .IsRequired(true);
 
             modelBuilder.Entity<TradeOffers>()
-                .HasIndex(to => to.ItemId);
+                .HasIndex(to => new { to.ItemId, to.BuyerId });
 
             modelBuilder.Entity<TradeOffers>()
                 .HasIndex(to => to.BuyerId);
@@ -179,6 +181,10 @@ namespace Renty.Server
 
             modelBuilder.Entity<TradeOffers>()
                 .Property(to => to.State)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<TradeOffers>()
+                .Property(i => i.PriceUnit)
                 .HasConversion<string>();
 
             modelBuilder.Entity<Transactions>()

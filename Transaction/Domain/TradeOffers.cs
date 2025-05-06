@@ -1,6 +1,7 @@
-﻿using Renty.Server.Product.Domain;
+﻿using Renty.Server.Model;
+using Renty.Server.Product.Domain;
 
-namespace Renty.Server.Model
+namespace Renty.Server.Transaction.Domain
 {
     public enum TradeOfferState
     {
@@ -12,12 +13,11 @@ namespace Renty.Server.Model
     public class TradeOffers
     {
         public int Id { get; set; }
-        public required int ItemId { get; set; }
+        public int ItemId { get; set; }
         public required string BuyerId { get; set; }
         public required decimal Price { get; set; }
-        public required decimal FinalPrice { get; set; }
         public required decimal SecurityDeposit { get; set; }
-        public required PriceUnit UnitOfTime { get; set; }
+        public required PriceUnit PriceUnit { get; set; }
         public DateTime? BorrowStartAt { get; set; }
         public DateTime? ReturnAt { get; set; }
         public required DateTime CreatedAt { get; set; }
@@ -27,7 +27,7 @@ namespace Renty.Server.Model
         public TradeOfferState State { get; set; } = TradeOfferState.Pending;
 
 
-        public required Items Item { get; set; }
-        public required Users Buyer { get; set; }
+        public Items Item { get; set; }
+        public Users Buyer { get; set; }
     }
 }
