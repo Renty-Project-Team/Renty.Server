@@ -1,6 +1,6 @@
 ﻿namespace Renty.Server.Product.Domain.DTO
 {
-    public class DetailResponse
+    public class ProductDetailResponse
     {
         public required int ItemId { get; set; }
         public required string UserName { get; set; }

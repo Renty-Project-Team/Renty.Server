@@ -38,7 +38,7 @@ namespace Renty.Server.Product.Controller
         }
 
         [HttpGet("detail")]
-        public async Task<ActionResult<DetailResponse>> GetPost([FromQuery] int itemId)
+        public async Task<ActionResult<ProductDetailResponse>> GetPost([FromQuery] int itemId)
         {
             try
             {

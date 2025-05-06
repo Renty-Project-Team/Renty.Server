@@ -53,13 +53,13 @@ namespace Renty.Server.Product.Service
             }
         }
         
-        public async Task<DetailResponse> GetDetail(int itemId)
+        public async Task<ProductDetailResponse> GetDetail(int itemId)
         {
             var item = await productRepo.FindBy(itemId) ?? throw new ItemNotFoundException();
             item.ViewCount++;
             await productRepo.Save();
 
-            return new DetailResponse()
+            return new ProductDetailResponse()
             {
                 ItemId = item.Id,
                 UserName = item.Seller.UserName!,
