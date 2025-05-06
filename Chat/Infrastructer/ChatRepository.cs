@@ -45,6 +45,7 @@ namespace Renty.Server.Chat.Infrastructer
                     MessageType = room.LastMessage != null ? room.LastMessage.Type : null,
                     LastAt = room.LastMessage != null ? room.LastMessage.CreatedAt : room.CreatedAt,
                     ProfileImageUrl = room.ChatUsers.First(user => user.UserId != userId).User.ProfileImage,
+                    UnreadCount = room.Messages.Where(m => m.CreatedAt > room.ChatUsers.First(user => user.UserId == userId && user.LeftAt == null).LastReadAt).Count()
                 })
                 .ToListAsync();
         }

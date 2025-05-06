@@ -8,5 +8,6 @@
         public required MessageType? MessageType { get; set; }
         public required string? Message { get; set; }
         public required DateTime? LastAt { get; set; }
+        public required int UnreadCount { get; set; }
     }
 }
