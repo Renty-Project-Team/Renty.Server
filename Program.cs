@@ -14,6 +14,8 @@ using Renty.Server.Model;
 using Renty.Server.Product.Domain.Repository;
 using Renty.Server.Product.Infrastructer;
 using Renty.Server.Product.Service;
+using Renty.Server.Transaction.Domain.Repository;
+using Renty.Server.Transaction.Infrastructer;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,6 +40,7 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IChatRepository, ChatRepository>();
+builder.Services.AddScoped<ITradeOfferRepository, TradeOfferRepository>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<ChatRoomService>();
 

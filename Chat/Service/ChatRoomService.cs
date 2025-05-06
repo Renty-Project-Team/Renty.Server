@@ -6,11 +6,14 @@ using Renty.Server.Chat.Domain.DTO;
 using Renty.Server.Chat.Domain.Repository;
 using Renty.Server.Exceptions;
 using Renty.Server.Global;
+using Renty.Server.Product.Domain;
 using Renty.Server.Product.Domain.Repository;
+using Renty.Server.Transaction.Domain;
+using Renty.Server.Transaction.Domain.Repository;
 
 namespace Renty.Server.Chat.Service
 {
-    public class ChatRoomService(IMemoryCache memoryCache, IChatRepository chatRepo, IProductRepository productRepo, IUserRepository userRepo)
+    public class ChatRoomService(IMemoryCache memoryCache, IChatRepository chatRepo, IProductRepository productRepo, ITradeOfferRepository tradeOfferRepo)
     {
         private static readonly TimeSpan slidingExpiration = TimeSpan.FromMinutes(30);
 
@@ -55,6 +58,64 @@ namespace Renty.Server.Chat.Service
                 RoomName = roomName,
                 UserId = userId,
                 JoinedAt = now,
+                LastReadAt = now,
+            };
+        }
+
+        private TradeOffers CreateTradeOffer(Items item, string buyerId)
+        {
+            return new()
+            {
+                Item = item,
+                Price = item.Price,
+                SecurityDeposit = item.SecurityDeposit,
+                PriceUnit = item.PriceUnit,
+                BuyerId = buyerId,
+                CreatedAt = TimeHelper.GetKoreanTime(),
+            };
+        }
+
+        private ChatRoomDetailResponse CreateDetailResponse(ChatRooms room, TradeOffers tradeOffer, string userId, DateTime lastReadAt)
+        {
+            var isSeller = tradeOffer.BuyerId != userId;
+            var offer = new Offer
+            {
+                BorrowStartAt = tradeOffer.BorrowStartAt,
+                ReturnAt = tradeOffer.ReturnAt,
+                Price = tradeOffer.Price,
+                SecurityDeposit = tradeOffer.SecurityDeposit,
+                PriceUnit = tradeOffer.PriceUnit,
+                State = tradeOffer.State,
+                Title = tradeOffer.Item.Title,
+                ImageUrl = tradeOffer.Item.ItemImages.First().ImageUrl,
+            };
+            var users = room.ChatUsers.Where(u => u.LeftAt == null)
+                .Select(user => new User
+                {
+                    Name = user.User.UserName!,
+                    ProfileImageUrl = user.User.ProfileImage,
+                    LastReadAt = user.LastReadAt,
+                })
+                .ToList();
+
+            var messages = room.ChatUsers.DistinctBy(u => u.UserId)
+                .Join(room.Messages, u => u.Id, m => m.SenderId, (u, m) => new { ChatUser = u, Message = m })
+                .Select(result => new Message
+                {
+                    SenderName = result.ChatUser.User.UserName!,
+                    SendAt = result.Message.CreatedAt,
+                    Content = result.Message.Content,
+                    Type = result.Message.Type,
+                })
+                .OrderByDescending(m => m.SendAt)
+                .ToList();
+            return new ChatRoomDetailResponse
+            {
+                RoomId = room.Id,
+                Offer = offer,
+                IsSeller = isSeller,
+                Users = users,
+                Messages = messages
             };
         }
 
@@ -67,23 +128,36 @@ namespace Renty.Server.Chat.Service
 
             try
             {
-                var item = await productRepo.FindOnlyItemBy(itemId) ?? throw new ItemNotFoundException();
+                var item = await productRepo.FindBy(itemId) ?? throw new ItemNotFoundException();
                 if (item.SellerId == buyerId)
                 {
                     throw new SelfChatCreationException();
                 }
-                if (await chatRepo.Has(itemId, buyerId))
+
+                var room = await chatRepo.FindByItem(itemId, buyerId);
+                var seller = item.Seller;
+
+                if (room == null)
+                {
+                    var newRoom = CreateRoom(itemId);
+                    newRoom.JoinUser(CreateUser(buyerId, seller.UserName!));
+                    newRoom.JoinUser(CreateUser(item.SellerId, buyerName));
+
+                    item.AddTradeOffer(CreateTradeOffer(item, buyerId));
+                    item.ChatCount++;
+
+                    chatRepo.Add(newRoom);
+                }
+                else if (room.ChatUsers.Any(u => u.UserId == buyerId && u.LeftAt == null))
                 {
                     throw new ChatRoomAlreadyExistsException();
                 }
-
-                var seller = await userRepo.FindUserOnlyBy(item.SellerId) ?? throw new UserNotFoundException();
-                var room = CreateRoom(itemId);
-                room.JoinUser(CreateUser(buyerId, seller.UserName!));
-                room.JoinUser(CreateUser(item.SellerId, buyerName));
-
-                chatRepo.Add(room);
-                item.ChatCount++;
+                else
+                {
+                    var newUser = CreateUser(buyerId, seller.UserName!);
+                    room.JoinUser(newUser);
+                }
+                
                 await chatRepo.Save();
             }
             finally
@@ -95,6 +169,17 @@ namespace Renty.Server.Chat.Service
         public async Task SendMessage()
         {
 
+        }
+
+        public async Task<ChatRoomDetailResponse> GetRoomDetail(int roomId, string userId, DateTime lastReadAt)
+        {
+            var room = await chatRepo.FindBy(roomId, lastReadAt) ?? throw new ChatRoomNotFoundException();
+            if (room.ChatUsers.All(user => user.UserId != userId)) throw new UserNotFoundException();
+
+            var tradeOffer = await tradeOfferRepo.FindBy(room.ItemId, room.ChatUsers.First(u => u.UserId != room.Item.SellerId).UserId);
+
+            var detail = CreateDetailResponse(room, tradeOffer!, userId, lastReadAt);
+            return detail;
         }
 
         public async Task<ICollection<ChatRoomResponce>> GetUserChatRooms(string userId)

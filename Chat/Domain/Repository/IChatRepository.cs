@@ -6,8 +6,9 @@ namespace Renty.Server.Chat.Domain.Repository
     public interface IChatRepository
     {
         void Add(ChatRooms room);
+        Task<ChatRooms?> FindBy(int roomId, DateTime lastReadAt);
+        Task<ChatRooms?> FindByItem(int itemId, string userId);
         Task<ICollection<ChatRoomResponce>> GetRoomList(string userId);
-        Task<bool> Has(int itemId, string userId);
         Task Save();
     }
 }

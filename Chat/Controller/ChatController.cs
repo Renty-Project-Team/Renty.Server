@@ -50,5 +50,20 @@ namespace Renty.Server.Chat.Controller
             var rooms = await roomService.GetUserChatRooms(userId);
             return Ok(new { Rooms = rooms });
         }
+
+        [HttpGet("Room")]
+        public async Task<ActionResult<ChatRoomDetailResponse>> GetRoom(int roomId, DateTime lastReadAt)
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+                var detail = await roomService.GetRoomDetail(roomId, userId, lastReadAt);
+                return Ok(detail);
+            }
+            catch (Exception e) when (e is ChatRoomNotFoundException or UserNotFoundException)
+            {
+                return BadRequest(new ProblemDetails() { Status = 400, Detail = "채팅방을 찾을 수 없습니다." } );
+            }
+        }
     }
 }

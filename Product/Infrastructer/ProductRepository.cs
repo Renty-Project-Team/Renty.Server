@@ -7,11 +7,6 @@ namespace Renty.Server.Product.Infrastructer
 {
     public class ProductRepository(RentyDbContext dbContext) : IProductRepository
     {
-        public async Task<Items?> FindOnlyItemBy(int itemId)
-        {
-            return await dbContext.Items.FirstOrDefaultAsync(i => i.Id == itemId);
-        }
-
         public async Task<ICollection<PostsResponse>> Take(PostsRequest request, int takeCount)
         {
             var query = dbContext.Items.AsQueryable();

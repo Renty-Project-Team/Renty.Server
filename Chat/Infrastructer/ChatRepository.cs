@@ -10,20 +10,32 @@ namespace Renty.Server.Chat.Infrastructer
 {
     public class ChatRepository(RentyDbContext dbContext) : IChatRepository
     {
-        
-        public async Task<bool> Has(int itemId, string userId)
+
+        public async Task<ChatRooms?> FindBy(int roomId, DateTime lastReadAt)
         {
             return await dbContext.ChatRooms
-                .AnyAsync(room => room.ItemId == itemId && room.ChatUsers.Any(user => user.UserId == userId));
+                .Include(room => room.Item)
+                .Include(room => room.LastMessage)
+                .Include(room => room.Messages.Where(m => m.CreatedAt > lastReadAt))
+                .Include(room => room.ChatUsers)
+                    .ThenInclude(user => user.User)
+                .FirstOrDefaultAsync(room => room.Id == roomId);
         }
-        
+
+        public async Task<ChatRooms?> FindByItem(int itemId, string userId)
+        {
+            return await dbContext.ChatRooms
+                .Include(room => room.ChatUsers.Where(user => user.UserId == userId))
+                .FirstOrDefaultAsync(room => room.ItemId == itemId && room.ChatUsers.Any(user => user.UserId == userId));
+        }
+
         public async Task<ICollection<ChatRoomResponce>> GetRoomList(string userId)
         {
             return await dbContext.ChatRooms.Include(room => room.Item)
                 .Include(room => room.LastMessage)
                 .Include(room => room.ChatUsers)
                     .ThenInclude(user => user.User)
-                .Where(room => room.ChatUsers.Any(user => user.UserId == userId))
+                .Where(room => room.ChatUsers.Any(user => user.UserId == userId && user.LeftAt == null))
                 .OrderByDescending(room => room.UpdatedAt)
                 .Select(room => new ChatRoomResponce
                 {

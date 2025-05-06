@@ -1,5 +1,6 @@
 ﻿using Renty.Server.Chat.Domain;
 using Renty.Server.Model;
+using Renty.Server.Transaction.Domain;
 
 namespace Renty.Server.Product.Domain
 {
@@ -33,5 +34,10 @@ namespace Renty.Server.Product.Domain
         public List<ChatRooms> Chats { get; set; } = [];
         public List<TradeOffers> TradeOffers { get; set; } = [];
         public List<Transactions> Transactions { get; set; } = [];
+
+        public void AddTradeOffer(TradeOffers tradeOffer)
+        {
+            TradeOffers.Add(tradeOffer);
+        }
     }
 }

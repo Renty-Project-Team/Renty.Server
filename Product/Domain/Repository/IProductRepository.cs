@@ -6,7 +6,6 @@ namespace Renty.Server.Product.Domain.Repository
     {
         void Add(Items item);
         Task<Items?> FindBy(int itemId);
-        Task<Items?> FindOnlyItemBy(int itemId);
         Task Save();
         Task<ICollection<PostsResponse>> Take(PostsRequest request, int takeCount);
     }
