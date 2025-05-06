@@ -10,7 +10,11 @@ namespace Renty.Server.Chat.Infrastructer
 {
     public class ChatRepository(RentyDbContext dbContext) : IChatRepository
     {
-
+        public async Task UpdateReadAt(int roonId, string userId, DateTime time)
+        {
+            await dbContext.ChatUsers.Where(u => u.ChatRoomId == roonId && u.UserId == userId && u.LeftAt == null)
+                .ExecuteUpdateAsync(u => u.SetProperty(u => u.LastReadAt, time));
+        }
         public async Task<ChatRooms?> FindBy(int roomId, DateTime lastReadAt)
         {
             return await dbContext.ChatRooms

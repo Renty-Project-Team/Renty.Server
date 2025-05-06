@@ -171,6 +171,11 @@ namespace Renty.Server.Chat.Service
 
         }
 
+        public async Task RecordReadTime(int roomId, string userId)
+        {
+            await chatRepo.UpdateReadAt(roomId, userId, TimeHelper.GetKoreanTime());
+        }
+
         public async Task<ChatRoomDetailResponse> GetRoomDetail(int roomId, string userId, DateTime lastReadAt)
         {
             var room = await chatRepo.FindBy(roomId, lastReadAt) ?? throw new ChatRoomNotFoundException();

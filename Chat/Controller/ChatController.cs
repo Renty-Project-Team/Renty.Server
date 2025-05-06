@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
-using Renty.Server.Chat.Domain;
 using Renty.Server.Chat.Domain.DTO;
-using Renty.Server.Chat.Domain.Repository;
 using Renty.Server.Chat.Service;
 using Renty.Server.Exceptions;
 using System.Security.Claims;
@@ -63,6 +60,21 @@ namespace Renty.Server.Chat.Controller
             catch (Exception e) when (e is ChatRoomNotFoundException or UserNotFoundException)
             {
                 return BadRequest(new ProblemDetails() { Status = 400, Detail = "채팅방을 찾을 수 없습니다." } );
+            }
+        }
+
+        [HttpPost("MarkAsRead")]
+        public async Task<IActionResult> MarkAsRead(MaskRequest request)
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+                await roomService.RecordReadTime(request.RoomId, userId);
+                return Ok();
+            }
+            catch (Exception e) when (e is ChatRoomNotFoundException or UserNotFoundException)
+            {
+                return BadRequest(new ProblemDetails() { Status = 400, Detail = "채팅방을 찾을 수 없습니다." });
             }
         }
     }
