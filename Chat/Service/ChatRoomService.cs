@@ -177,8 +177,11 @@ namespace Renty.Server.Chat.Service
             if (room.ChatUsers.All(user => user.UserId != userId)) throw new UserNotFoundException();
 
             var tradeOffer = await tradeOfferRepo.FindBy(room.ItemId, room.ChatUsers.First(u => u.UserId != room.Item.SellerId).UserId);
+            var user = room.ChatUsers.First(u => u.UserId == userId && u.LeftAt == null);
+            user.LastReadAt = TimeHelper.GetKoreanTime();
 
             var detail = CreateDetailResponse(room, tradeOffer!, userId, lastReadAt);
+            await chatRepo.Save();
             return detail;
         }
 
