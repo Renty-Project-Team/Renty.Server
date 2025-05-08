@@ -1,7 +1,9 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Renty.Server;
 using Renty.Server.Auth.Domain;
 using Renty.Server.Auth.Infrastructer;
@@ -16,6 +18,7 @@ using Renty.Server.Product.Infrastructer;
 using Renty.Server.Product.Service;
 using Renty.Server.Transaction.Domain.Repository;
 using Renty.Server.Transaction.Infrastructer;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,6 +47,43 @@ builder.Services.AddScoped<ITradeOfferRepository, TradeOfferRepository>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<ChatService>();
 
+
+// swagger 설정
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+
+    // JWT 인증을 위한 보안 정의 추가
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = @"JWT Authorization header using the Bearer scheme. <br/> 
+                      Enter 'Bearer' [space] and then your token in the text input below. <br/>
+                      Example: 'Bearer 12345abcdef'",
+        Name = "Authorization", // 요청 헤더 이름
+        In = ParameterLocation.Header, // 헤더에 위치
+        Type = SecuritySchemeType.ApiKey, // 실제로는 ApiKey 타입으로 지정하지만, 동작은 Bearer 인증처럼 함
+        Scheme = "Bearer" // 스킴 이름
+    });
+
+    // 전역적으로 모든 API에 인증 요구 사항 추가 (선택 사항, 또는 특정 API에만 적용 가능)
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer" // 위에서 정의한 보안 스킴의 ID
+                },
+                Scheme = "oauth2", // 이 부분은 Swagger UI 표시에 영향을 줌
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+            },
+            new List<string>() // 필요한 scope가 있다면 여기에 추가 (일반적인 JWT Bearer는 빈 리스트)
+        }
+    });
+});
 
 // enum을 문자열로 변환하는 JsonStringEnumConverter 추가
 builder.Services.AddControllers()
@@ -77,41 +117,36 @@ builder.Services.AddIdentity<Users, IdentityRole>(options => {
     .AddEntityFrameworkStores<RentyDbContext>()
     .AddDefaultTokenProviders(); // 비밀번호 재설정 토큰 등에 필요
 
-// 3. << 중요 >> 쿠키 기반 인증 설정
-builder.Services.ConfigureApplicationCookie(options =>
+// 2. << 중요 >> JWT 기반 인증 설정으로 변경
+builder.Services.AddAuthentication(options =>
 {
-    options.Cookie.HttpOnly = true; // JavaScript에서 쿠키 접근 불가 (보안 필수)
-    // options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // HTTPS 강제 시 (운영 환경 필수)
-    options.ExpireTimeSpan = TimeSpan.FromDays(14); // 비활성 시 만료 시간 (예: 30분)
-    options.SlidingExpiration = true; // <<--- 활동 시 만료 시간 자동 연장 (로그인 유지 핵심)
-    options.Cookie.Name = ".Renty.AuthCookie"; // 쿠키 이름 지정 (선택)
-
-    // API 동작을 위해 리디렉션 대신 상태 코드 반환 설정
-    options.Events = new CookieAuthenticationEvents
+    // 기본 인증 스키마를 JWT Bearer로 설정
+    // API 서버에서는 인증되지 않은 요청 시 로그인 페이지로 리디렉션하는 대신 401을 반환해야 함
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme; // 경우에 따라 추가
+})
+    .AddJwtBearer(options =>
     {
-        OnRedirectToLogin = context => // 401 Unauthorized
-        {
-            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            return Task.CompletedTask;
-        },
-        OnRedirectToAccessDenied = context => // 403 Forbidden
-        {
-            context.Response.StatusCode = StatusCodes.Status403Forbidden;
-            return Task.CompletedTask;
-        }
-    };
-});
+        options.SaveToken = true; // HttpContext.GetTokenAsync("access_token") 등으로 토큰 접근 가능하게 함 (선택 사항)
+        options.RequireHttpsMetadata = builder.Environment.IsProduction(); // 운영 환경에서는 HTTPS 강제 (권장)
 
-// 4. CORS 설정 (플러터 앱 등 다른 출처에서의 요청 허용)
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFlutterApp", // 정책 이름
-        policy => policy
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials()); // <<-- 쿠키를 주고받기 위해 필수!!!
-});
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuer = true, // 발급자 검증
+            ValidateAudience = true, // 대상 검증
+            ValidateLifetime = true, // 만료 시간 검증 <<-- 이게 ExpireTimeSpan과 유사한 역할
+            ValidateIssuerSigningKey = true, // 서명 키 검증 (필수)
 
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+
+            // ClockSkew: 토큰 만료 시간을 검증할 때 허용하는 시간 오차 (기본값 5분)
+            // 짧은 만료 시간의 토큰을 사용하고, 만료 직후 요청이 실패하는 것을 방지하기 위해 약간의 유예를 둘 수 있음
+            // ClockSkew = TimeSpan.Zero // 오차 없이 정확히 만료시키려면
+        };
+    });
 
 var app = builder.Build();
 
@@ -129,7 +164,7 @@ if (app.Environment.IsDevelopment())
 
 // 정적 파일(이미지) 미들웨어 추가
 var settings = builder.Configuration.GetSection("Settings");
-var imagePath = Path.Combine(settings["DataStorage"], settings["ImagesFolder"]);
+var imagePath = Path.Combine(settings["DataStorage"]!, settings["ImagesFolder"]!);
 if (!string.IsNullOrEmpty(imagePath))
 {
     if (!Directory.Exists(imagePath))

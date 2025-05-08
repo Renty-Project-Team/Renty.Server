@@ -34,8 +34,8 @@ namespace Renty.Server.Auth.Controller
         {
             try
             {
-                await new AuthManager(userRepository).Login(request);
-                return Ok(new { Message = "로그인 성공" });
+                var jwt = await new AuthManager(userRepository).Login(request);
+                return Ok(new { Message = "로그인 성공", Token = jwt });
             }
             catch (LoginFailException)
             {
@@ -44,14 +44,5 @@ namespace Renty.Server.Auth.Controller
             }
 
         }
-
-        [HttpPost("logout")]
-        [Authorize] // 로그인된 사용자만 로그아웃 가능
-        public async Task<IActionResult> Logout()
-        {
-            await new AuthManager(userRepository).Logout();
-            return Ok(new { Message = "로그아웃 성공" });
-        }
-
     }
 }

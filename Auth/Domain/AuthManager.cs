@@ -7,15 +7,11 @@
             await userRepository.Register(request);
         }
 
-        public async Task Login(LoginRequest request)
+        public async Task<string> Login(LoginRequest request)
         {
-            await userRepository.AddSignToCookie(request.Email, request.Password);
+            var jwt = await userRepository.CreateJWT(request.Email, request.Password);
             await userRepository.UpdateLastLoginAt(request.Email);
-        }
-
-        public async Task Logout()
-        {
-            await userRepository.RemoveSignToCookie();
+            return jwt;
         }
     }
 }
