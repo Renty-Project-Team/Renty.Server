@@ -29,7 +29,6 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSignalR();
 builder.Services.AddMemoryCache();
 
 // --- Options Pattern 설정 추가 ---
@@ -83,6 +82,12 @@ builder.Services.AddSwaggerGen(c =>
             new List<string>() // 필요한 scope가 있다면 여기에 추가 (일반적인 JWT Bearer는 빈 리스트)
         }
     });
+});
+
+// SignalR 설정
+builder.Services.AddSignalR().AddJsonProtocol(options =>
+{
+    options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter()); // Enum을 문자열로 변환하는 JsonStringEnumConverter 추가
 });
 
 // enum을 문자열로 변환하는 JsonStringEnumConverter 추가

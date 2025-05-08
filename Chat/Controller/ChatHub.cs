@@ -21,7 +21,7 @@ namespace Renty.Server.Chat.Controller
                 if (string.IsNullOrEmpty(message)) throw new HubException("{ Status: 400, Detail: 메세지가 없습니다. }");
                 var response = await chatService.SendMessage(roomId, callerId, userName, message, type);
                 
-                await Clients.User(response.receiverId).SendAsync("ReceiveMessage", response.message);
+                await Clients.User(response.receiverId).SendAsync("_handleIncomingMessage", response.message);
             }
             catch (Exception e) when (e is ChatRoomNotFoundException or UserNotFoundException)
             {
@@ -29,15 +29,5 @@ namespace Renty.Server.Chat.Controller
             }
         }
 
-        public async Task SendMessageToUser(string userName, string message)
-        {
-            string callerId = Context.UserIdentifier!;
-            await Clients.User(callerId).SendAsync("ReceiveMessage", userName, message);
-        }
-
-        public override async Task OnConnectedAsync()
-        {
-            await base.OnConnectedAsync();
-        }
     }
 }
