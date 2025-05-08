@@ -8,7 +8,6 @@
         public int SenderId { get; set; }
         public required string Content { get; set; }
         public required MessageType Type { get; set; }
-        public DateTime? ReadAt { get; set; }
         public required DateTime CreatedAt { get; set; }
 
         public ChatRooms ChatRoom { get; set; }

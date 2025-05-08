@@ -22,41 +22,16 @@ namespace Renty.Server.Chat.Domain
         public ChatMessages? LastMessage { get; set; }
         public List<ChatMessages> Messages { get; set; } = [];
 
-        public bool InUser(string userId)
+        public void AddMessage(ChatMessages message)
         {
-            return ChatUsers.Any(u => u.Equals(userId));
-            {
-                throw new UserNotFoundException();
-            }
-        }
-
-        private bool HasOtherUsers(string senderId)
-        {
-            return ChatUsers.Any(u => !u.Equals(senderId));
+            Messages.Add(message);
+            LastMessage = message;
+            UpdatedAt = message.CreatedAt;
         }
 
         public void JoinUser(ChatUsers user)
         {
             ChatUsers.Add(user);
         }
-
-        //public async Task<string?> FindReceiverId(int roomId, string senderId)
-        //{
-        //    var room = await dbContext.ChatRooms
-        //        .Include(room => room.Users)
-        //        .FirstOrDefaultAsync(room => room.Id == roomId)
-        //        ?? throw new HubException("{ Status: 400, Detail: 채팅방을 찾을 수 없습니다. }");
-
-        //    if (room.Users.Any(p => p.UserId == senderId))
-        //        throw new HubException("{ Status: 400, Detail: 본인이 속하지 않은 채팅방입니다. }");
-
-        //    var receiver = room.Users.FirstOrDefault(p => p.UserId != senderId);
-        //    return receiver?.UserId ?? null;
-        //}
-
-        //public ChatSendRequest SendMessage(string senderId)
-        //{
-
-        //}
     }
 }

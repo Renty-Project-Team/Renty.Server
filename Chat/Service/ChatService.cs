@@ -6,6 +6,7 @@ using Renty.Server.Chat.Domain.DTO;
 using Renty.Server.Chat.Domain.Repository;
 using Renty.Server.Exceptions;
 using Renty.Server.Global;
+using Renty.Server.Model;
 using Renty.Server.Product.Domain;
 using Renty.Server.Product.Domain.Repository;
 using Renty.Server.Transaction.Domain;
@@ -13,7 +14,7 @@ using Renty.Server.Transaction.Domain.Repository;
 
 namespace Renty.Server.Chat.Service
 {
-    public class ChatRoomService(IMemoryCache memoryCache, IChatRepository chatRepo, IProductRepository productRepo, ITradeOfferRepository tradeOfferRepo)
+    public class ChatService(IMemoryCache memoryCache, IChatRepository chatRepo, IProductRepository productRepo, ITradeOfferRepository tradeOfferRepo)
     {
         private static readonly TimeSpan slidingExpiration = TimeSpan.FromMinutes(30);
 
@@ -100,6 +101,7 @@ namespace Renty.Server.Chat.Service
 
             var messages = room.ChatUsers.DistinctBy(u => u.UserId)
                 .Join(room.Messages, u => u.Id, m => m.SenderId, (u, m) => new { ChatUser = u, Message = m })
+                .Where(r => r.Message.CreatedAt > r.ChatUser.JoinedAt)
                 .Select(result => new Message
                 {
                     SenderName = result.ChatUser.User.UserName!,
@@ -116,6 +118,30 @@ namespace Renty.Server.Chat.Service
                 IsSeller = isSeller,
                 Users = users,
                 Messages = messages
+            };
+        }
+
+        private ChatMessages CreateMessage(ChatUsers user, string content, MessageType type)
+        {
+            var now = TimeHelper.GetKoreanTime();
+            return new()
+            {
+                Content = content,
+                Type = type,
+                CreatedAt = now,
+                Sender = user, // 이 부분은 나중에 설정해야 함
+            };
+        }
+
+        private MessageResponse CreateMessageResponse(int roomId, ChatMessages message, string userName)
+        {
+            return new MessageResponse
+            {
+                ChatRoomId = roomId,
+                SenderId = userName,
+                Timestamp = message.CreatedAt,
+                Content = message.Content,
+                Type = message.Type,
             };
         }
 
@@ -166,9 +192,27 @@ namespace Renty.Server.Chat.Service
             }
         }
 
-        public async Task SendMessage()
+        public async Task<(string receiverId, MessageResponse message)> SendMessage(int roomId, string callerId, string userName, string content, MessageType type)
         {
+            var now = TimeHelper.GetKoreanTime();
+            var room = await chatRepo.FindBy(roomId, now)
+                ?? throw new ChatRoomNotFoundException();
+            var caller = room.ChatUsers.FirstOrDefault(user => user.UserId == callerId && user.LeftAt == null)
+                ?? throw new UserNotFoundException();
 
+            var otherUser = room.ChatUsers.First(user => user.UserId != callerId);
+            if (otherUser.LeftAt != null)
+            {
+                otherUser.LeftAt = null;
+                otherUser.JoinedAt = now;
+                otherUser.LastReadAt = now;
+            }
+
+            var message = CreateMessage(caller, content, type);
+            room.AddMessage(message);
+
+            await chatRepo.Save();
+            return (otherUser.User.Id, CreateMessageResponse(roomId, message, userName));
         }
 
         public async Task RecordReadTime(int roomId, string userId)

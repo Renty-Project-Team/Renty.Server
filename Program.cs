@@ -42,7 +42,7 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IChatRepository, ChatRepository>();
 builder.Services.AddScoped<ITradeOfferRepository, TradeOfferRepository>();
 builder.Services.AddScoped<ProductService>();
-builder.Services.AddScoped<ChatRoomService>();
+builder.Services.AddScoped<ChatService>();
 
 
 // enum을 문자열로 변환하는 JsonStringEnumConverter 추가
@@ -150,6 +150,8 @@ app.UseCors("AllowFlutterApp");
 // << 중요 >> 인증 및 권한 부여 미들웨어 추가 (순서 중요!)
 app.UseAuthentication(); // 요청의 쿠키를 확인하고 사용자 인증
 app.UseAuthorization(); // [Authorize] 특성 처리
+
+app.UseWebSockets();
 
 app.MapControllers();
 app.MapHub<ChatHub>("/chatHub");

@@ -10,7 +10,7 @@ namespace Renty.Server.Chat.Controller
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class ChatController(ChatRoomService roomService) : ControllerBase
+    public class ChatController(ChatService roomService) : ControllerBase
     {
         [HttpPost("Create")]
         public async Task<IActionResult> CreateRoom(ChatRoomCreateRequest request)
