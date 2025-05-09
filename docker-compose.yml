@@ -1,0 +1,13 @@
+﻿version: '3.8' 
+
+services:
+  renty-server-release: # 서비스 이름 (원하는 대로 지정 가능)
+    image: jsm150/renty_server:1.0 
+    ports:
+      - "8086:8080" # "호스트_포트:컨테이너_포트(8080 고정)"
+    environment:
+      - jwt__key=your_secret_key # JWT 키 설정 (여기서 your_secret_key를 실제 키로 변경, 32자 이상 권장)
+    volumes:
+      - C:\folder1:/app/database # 예시: 로컬의 C:\folder1 디렉토리를 컨테이너의 /app/database로 마운트
+                                 # 여기서 C:\folder1은 실제 경로로 변경
+    restart: unless-stopped # 컨테이너가 예기치 않게 종료되면 자동으로 재시작
