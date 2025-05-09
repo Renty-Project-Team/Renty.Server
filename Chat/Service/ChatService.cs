@@ -151,7 +151,7 @@ namespace Renty.Server.Chat.Service
             var semaphore = GetSemaphore(cacheKey);
 
             await semaphore.WaitAsync();
-
+            
             try
             {
                 var item = await productRepo.FindBy(itemId) ?? throw new ItemNotFoundException();
@@ -178,10 +178,21 @@ namespace Renty.Server.Chat.Service
                 {
                     throw new ChatRoomAlreadyExistsException();
                 }
-                else
+                else 
                 {
-                    var newUser = CreateUser(buyerId, seller.UserName!);
-                    room.JoinUser(newUser);
+                    var buyer = room.ChatUsers.FirstOrDefault(u => u.UserId == buyerId);
+                    if (buyer == null)
+                    {
+                        var newUser = CreateUser(buyerId, seller.UserName!);
+                        room.JoinUser(newUser);
+                    }
+                    else
+                    {
+                        var now = TimeHelper.GetKoreanTime();
+                        buyer.LeftAt = null;
+                        buyer.JoinedAt = now;
+                        buyer.LastReadAt = now;
+                    }
                 }
                 
                 await chatRepo.Save();
@@ -223,7 +234,7 @@ namespace Renty.Server.Chat.Service
         public async Task<ChatRoomDetailResponse> GetRoomDetail(int roomId, string userId, DateTime lastReadAt)
         {
             var room = await chatRepo.FindBy(roomId, lastReadAt) ?? throw new ChatRoomNotFoundException();
-            if (room.ChatUsers.All(user => user.UserId != userId)) throw new UserNotFoundException();
+            if (!room.ChatUsers.Any(user => user.UserId == userId && user.LeftAt == null)) throw new UserNotFoundException();
 
             var tradeOffer = await tradeOfferRepo.FindBy(room.ItemId, room.ChatUsers.First(u => u.UserId != room.Item.SellerId).UserId);
             var user = room.ChatUsers.First(u => u.UserId == userId && u.LeftAt == null);
@@ -237,6 +248,11 @@ namespace Renty.Server.Chat.Service
         public async Task<ICollection<ChatRoomResponce>> GetUserChatRooms(string userId)
         {
             return await chatRepo.GetRoomList(userId);
+        }
+
+        public async Task LeaveRoom(int roomId, string userId)
+        {
+            await chatRepo.LeaveChatRoom(roomId, userId);
         }
     }
 }

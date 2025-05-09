@@ -77,5 +77,13 @@ namespace Renty.Server.Chat.Controller
                 return BadRequest(new ProblemDetails() { Status = 400, Detail = "채팅방을 찾을 수 없습니다." });
             }
         }
+
+        [HttpPost("Leave")]
+        public async Task<IActionResult> LeaveRoom(LeaveRequest request)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            await roomService.LeaveRoom(request.RoomId, userId);
+            return Ok();
+        }
     }
 }
