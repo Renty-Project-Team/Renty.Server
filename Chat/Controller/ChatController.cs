@@ -19,12 +19,12 @@ namespace Renty.Server.Chat.Controller
             {
                 var buyerId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
                 var buyerName = User.FindFirstValue(ClaimTypes.Name)!;
-                await roomService.CreateItemChatRoom(request.ItemId, buyerId, buyerName);
-                return Ok(new { Message = "채팅방이 생성되었습니다.", Status = "created" });
+                var roomId = await roomService.CreateItemChatRoom(request.ItemId, buyerId, buyerName);
+                return Ok(new { ChatRoomId = roomId, Message = "채팅방이 생성되었습니다.", Status = "created" });
             }
-            catch (ChatRoomAlreadyExistsException)
+            catch (ChatRoomAlreadyExistsException e)
             {
-                return Ok(new { Message = "채팅방이 이미 존재합니다.", Status = "exists" });
+                return Ok(new { ChatRoomId = e.RoomId, Message = "채팅방이 이미 존재합니다.", Status = "exists" });
             }
             catch (ItemNotFoundException)
             {

@@ -2,5 +2,6 @@
 {
     public class ChatRoomAlreadyExistsException : Exception
     {
+        public required int RoomId { get; init; }
     }
 }

@@ -19,8 +19,8 @@ namespace Renty.Server.Product.Controller
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
-            await productService.Upload(request, userId);
-            return Ok(new { Message = "상품 등록을 성공했습니다." });
+            var itemId = await productService.Upload(request, userId);
+            return Ok(new { ItemId = itemId, Message = "상품 등록을 성공했습니다." });
         }
 
         [HttpGet("posts")]

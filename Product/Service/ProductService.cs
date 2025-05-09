@@ -35,7 +35,7 @@ namespace Renty.Server.Product.Service
             };
         }
 
-        public async Task Upload(UploadRequest request, string userId)
+        public async Task<int> Upload(UploadRequest request, string userId)
         {
             var categorys = await categoryRepo.FindBy(request.Category) ?? throw new CategoryNotFoundException();
 
@@ -45,6 +45,7 @@ namespace Renty.Server.Product.Service
                 var item = CreatePost(request, userId, categorys, imgUrls);
                 productRepo.Add(item);
                 await productRepo.Save();
+                return item.Id;
             }
             catch
             {

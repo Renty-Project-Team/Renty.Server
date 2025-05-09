@@ -145,7 +145,7 @@ namespace Renty.Server.Chat.Service
             };
         }
 
-        public async Task CreateItemChatRoom(int itemId, string buyerId, string buyerName)
+        public async Task<int> CreateItemChatRoom(int itemId, string buyerId, string buyerName)
         {
             string cacheKey = $"ChatRoom_{itemId}_{buyerId}";
             var semaphore = GetSemaphore(cacheKey);
@@ -173,10 +173,11 @@ namespace Renty.Server.Chat.Service
                     item.ChatCount++;
 
                     chatRepo.Add(newRoom);
+                    room = newRoom;
                 }
                 else if (room.ChatUsers.Any(u => u.UserId == buyerId && u.LeftAt == null))
                 {
-                    throw new ChatRoomAlreadyExistsException();
+                    throw new ChatRoomAlreadyExistsException() { RoomId = room.Id };
                 }
                 else 
                 {
@@ -196,6 +197,8 @@ namespace Renty.Server.Chat.Service
                 }
                 
                 await chatRepo.Save();
+
+                return room.Id;
             }
             finally
             {
