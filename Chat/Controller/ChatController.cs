@@ -66,16 +66,9 @@ namespace Renty.Server.Chat.Controller
         [HttpPost("MarkAsRead")]
         public async Task<IActionResult> MarkAsRead(MaskRequest request)
         {
-            try
-            {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-                await roomService.RecordReadTime(request.RoomId, userId);
-                return Ok();
-            }
-            catch (Exception e) when (e is ChatRoomNotFoundException or UserNotFoundException)
-            {
-                return BadRequest(new ProblemDetails() { Status = 400, Detail = "채팅방을 찾을 수 없습니다." });
-            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            await roomService.RecordReadTime(request.RoomId, userId);
+            return Ok();
         }
 
         [HttpPost("Leave")]

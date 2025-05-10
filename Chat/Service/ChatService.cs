@@ -76,9 +76,9 @@ namespace Renty.Server.Chat.Service
             };
         }
 
-        private ChatRoomDetailResponse CreateDetailResponse(ChatRooms room, TradeOffers tradeOffer, string userId, DateTime lastReadAt)
+        private ChatRoomDetailResponse CreateDetailResponse(ChatRooms room, TradeOffers tradeOffer, ChatUsers user)
         {
-            var isSeller = tradeOffer.BuyerId != userId;
+            var isSeller = tradeOffer.BuyerId != user.UserId;
             var offer = new Offer
             {
                 BorrowStartAt = tradeOffer.BorrowStartAt,
@@ -101,7 +101,7 @@ namespace Renty.Server.Chat.Service
 
             var messages = room.ChatUsers.DistinctBy(u => u.UserId)
                 .Join(room.Messages, u => u.Id, m => m.SenderId, (u, m) => new { ChatUser = u, Message = m })
-                .Where(r => r.Message.CreatedAt > r.ChatUser.JoinedAt)
+                .Where(r => r.Message.CreatedAt > user.JoinedAt)
                 .Select(result => new Message
                 {
                     SenderName = result.ChatUser.User.UserName!,
@@ -237,13 +237,12 @@ namespace Renty.Server.Chat.Service
         public async Task<ChatRoomDetailResponse> GetRoomDetail(int roomId, string userId, DateTime lastReadAt)
         {
             var room = await chatRepo.FindBy(roomId, lastReadAt) ?? throw new ChatRoomNotFoundException();
-            if (!room.ChatUsers.Any(user => user.UserId == userId && user.LeftAt == null)) throw new UserNotFoundException();
+            var user = room.ChatUsers.FirstOrDefault(u => u.UserId == userId && u.LeftAt == null) ?? throw new UserNotFoundException();
 
             var tradeOffer = await tradeOfferRepo.FindBy(room.ItemId, room.ChatUsers.First(u => u.UserId != room.Item.SellerId).UserId);
-            var user = room.ChatUsers.First(u => u.UserId == userId && u.LeftAt == null);
             user.LastReadAt = TimeHelper.GetKoreanTime();
 
-            var detail = CreateDetailResponse(room, tradeOffer!, userId, lastReadAt);
+            var detail = CreateDetailResponse(room, tradeOffer!, user);
             await chatRepo.Save();
             return detail;
         }
