@@ -1,7 +1,10 @@
 ﻿using Microsoft.Extensions.Options;
 using Renty.Server.Global;
 using Renty.Server.Product.Domain.Repository;
-using System.Xml.Linq;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Processing;
+
 
 namespace Renty.Server.Product.Infrastructer
 {
@@ -28,8 +31,12 @@ namespace Renty.Server.Product.Infrastructer
                 var fileName = Guid.NewGuid().ToString() + extension;
                 var savePath = Path.Combine(imageFolder, fileName);
 
-                using var fileStream = new FileStream(savePath, FileMode.Create);
-                await img.CopyToAsync(fileStream);
+                var image = await Image.LoadAsync(img.OpenReadStream());
+                image.Mutate(x => x.Resize(550, 0));
+                await image.SaveAsync(savePath, new JpegEncoder()
+                {
+                    Quality = 80,
+                });
 
                 return Path.Combine(imageUrlBase, fileName);
             }));
