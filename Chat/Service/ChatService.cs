@@ -115,6 +115,7 @@ namespace Renty.Server.Chat.Service
             {
                 RoomId = room.Id,
                 Offer = offer,
+                CallerName = user.User.UserName!,
                 IsSeller = isSeller,
                 Users = users,
                 Messages = messages

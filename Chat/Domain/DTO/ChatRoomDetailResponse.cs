@@ -8,6 +8,7 @@ namespace Renty.Server.Chat.Domain.DTO
         public int RoomId { get; set; }
         
         public required Offer Offer { get; set; }
+        public required string CallerName { get; set; }
         public required bool IsSeller { get; set; }
         public required List<User> Users { get; set; }
         public required List<Message> Messages { get; set; }
