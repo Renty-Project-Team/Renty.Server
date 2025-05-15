@@ -45,9 +45,9 @@ namespace Renty.Server.Auth.Infrastructer
             return tokenHandler.WriteToken(token);
         }
 
-        public async Task<Users?> FindUserOnlyBy(string id)
+        public async Task<Users?> FindUserOnlyBy(string userName)
         {
-            return await userManager.FindByIdAsync(id);
+            return await userManager.FindByNameAsync(userName);
         }
 
         public async Task Register(RegisterRequest request)

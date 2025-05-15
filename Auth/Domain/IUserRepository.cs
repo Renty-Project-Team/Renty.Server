@@ -6,7 +6,7 @@ namespace Renty.Server.Auth.Domain
     {
         Task Register(RegisterRequest request);
         Task UpdateLastLoginAt(string email);
-        Task<Users?> FindUserOnlyBy(string id);
+        Task<Users?> FindUserOnlyBy(string userName);
         Task<string> CreateJWT(string email, string password);
     }
 }

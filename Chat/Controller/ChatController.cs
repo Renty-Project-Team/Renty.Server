@@ -85,5 +85,29 @@ namespace Renty.Server.Chat.Controller
                 return BadRequest(new ProblemDetails() { Status = 400, Detail = "채팅방을 찾을 수 없습니다." });
             }
         }
+
+        [HttpPost("TradeOffer")]
+        public async Task<IActionResult> UpdateTradeOffer(TradeOfferRequest request)
+        {
+            try
+            {
+                var callerId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+                await roomService.UpdateTradeOffer(request, callerId);
+                return Ok();
+            }
+            catch (Exception e) when (e is UserNotFoundException or TradeOfferNotFoundException)
+            {
+                return BadRequest(new ProblemDetails() { Status = 400, Detail = "거래 요청을 찾을 수 없습니다." });
+            }
+            catch (InvalidTradeOfferUserException) // 요청자의 거래가 아닐경우
+            {
+                return BadRequest(new ProblemDetails() { Status = 400, Detail = "잘못된 거래 요청입니다." });
+            }
+            catch (InvalidTradeOfferStateException) // 거래가 취소되었거나 이미 완료된 경우
+            {
+                return BadRequest(new ProblemDetails() { Status = 400, Detail = "거래 요청을 수정할 수 없습니다." });
+            }
+
+        }
     }
 }

@@ -14,7 +14,7 @@ using Renty.Server.Transaction.Domain.Repository;
 
 namespace Renty.Server.Chat.Service
 {
-    public class ChatService(IMemoryCache memoryCache, IChatRepository chatRepo, IProductRepository productRepo, ITradeOfferRepository tradeOfferRepo)
+    public class ChatService(IMemoryCache memoryCache, IChatRepository chatRepo, IProductRepository productRepo, ITradeOfferRepository tradeOfferRepo, IUserRepository userRepo)
     {
         private static readonly TimeSpan slidingExpiration = TimeSpan.FromMinutes(30);
 
@@ -81,6 +81,7 @@ namespace Renty.Server.Chat.Service
             var isSeller = tradeOffer.BuyerId != user.UserId;
             var offer = new Offer
             {
+                ItemId = room.ItemId,
                 BorrowStartAt = tradeOffer.BorrowStartAt,
                 ReturnAt = tradeOffer.ReturnAt,
                 Price = tradeOffer.Price,
@@ -269,6 +270,30 @@ namespace Renty.Server.Chat.Service
             }
 
             await chatRepo.Save();
+        }
+
+        public async Task UpdateTradeOffer(TradeOfferRequest request, string callerId)
+        {
+            var buyer = await userRepo.FindUserOnlyBy(request.BuyerName) ?? throw new UserNotFoundException();
+            var tradeOffer = await tradeOfferRepo.FindBy(request.ItemId, buyer.Id) ?? throw new TradeOfferNotFoundException();
+
+            if (buyer.Id != callerId && tradeOffer.Item.SellerId != callerId)
+            {
+                throw new InvalidTradeOfferUserException();
+            }
+
+            if (tradeOffer.State != TradeOfferState.Pending)
+            {
+                throw new InvalidTradeOfferStateException();
+            }
+
+            tradeOffer.BorrowStartAt = request.BorrowStartAt;
+            tradeOffer.ReturnAt = request.ReturnAt;
+            tradeOffer.Price = request.Price;
+            tradeOffer.PriceUnit = request.PriceUnit;
+            tradeOffer.SecurityDeposit = request.SecurityDeposit;
+
+            await tradeOfferRepo.Save();
         }
     }
 }

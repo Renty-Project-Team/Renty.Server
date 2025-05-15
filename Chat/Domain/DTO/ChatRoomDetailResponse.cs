@@ -16,6 +16,7 @@ namespace Renty.Server.Chat.Domain.DTO
 
     public class Offer
     {
+        public required int ItemId { get; set; }
         public required string Title { get; set; }
         public required string ImageUrl { get; set; }
         public required decimal Price { get; set; }
