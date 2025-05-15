@@ -61,6 +61,11 @@ namespace Renty.Server.Product.Infrastructer
                 .FirstOrDefaultAsync(i => i.Id == itemId);
         }
 
+        public async Task<bool> Exists(int itemId)
+        {
+            return await dbContext.Items.AnyAsync(i => i.Id == itemId);
+        }
+
         public void Add(Items item)
         {
             dbContext.Items.Add(item);

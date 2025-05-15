@@ -1,4 +1,4 @@
-﻿using Renty.Server.Model;
+﻿using Renty.Server.Auth.Domain;
 using Renty.Server.Product.Domain;
 
 namespace Renty.Server.Transaction.Domain

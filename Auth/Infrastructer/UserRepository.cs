@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Renty.Server.Auth.Domain;
+using Renty.Server.Auth.Domain.DTO;
+using Renty.Server.Auth.Domain.Repository;
 using Renty.Server.Exceptions;
 using Renty.Server.Global;
-using Renty.Server.Model;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -77,7 +78,6 @@ namespace Renty.Server.Auth.Infrastructer
 
         public async Task UpdateLastLoginAt(string email)
         {
-            // 로그인 성공! 인증 쿠키는 자동으로 응답 헤더에 포함됨.
             var user = await userManager.FindByEmailAsync(email);
 
             // 로그인 시간 업데이트

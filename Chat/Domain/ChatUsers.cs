@@ -1,4 +1,4 @@
-﻿using Renty.Server.Model;
+﻿using Renty.Server.Auth.Domain;
 
 namespace Renty.Server.Chat.Domain
 {

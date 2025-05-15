@@ -1,6 +1,9 @@
-﻿namespace Renty.Server.Auth.Domain
+﻿using Renty.Server.Auth.Domain.DTO;
+using Renty.Server.Auth.Domain.Repository;
+
+namespace Renty.Server.Auth.Service
 {
-    public class AuthManager(IUserRepository userRepository)
+    public class AuthService(IUserRepository userRepository)
     {
         public async Task Register(RegisterRequest request)
         {

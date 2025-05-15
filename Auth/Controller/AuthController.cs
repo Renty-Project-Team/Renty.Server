@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Renty.Server.Auth.Domain;
+using Renty.Server.Auth.Domain.DTO;
+using Renty.Server.Auth.Domain.Repository;
+using Renty.Server.Auth.Service;
 using Renty.Server.Exceptions;
 
 
@@ -18,7 +19,7 @@ namespace Renty.Server.Auth.Controller
         {
             try
             {
-                await new AuthManager(userRepository).Register(request);
+                await new AuthService(userRepository).Register(request);
                 return Ok(new { Message = "회원가입 성공" });
             }
             catch (RegisterException e)
@@ -34,7 +35,7 @@ namespace Renty.Server.Auth.Controller
         {
             try
             {
-                var jwt = await new AuthManager(userRepository).Login(request);
+                var jwt = await new AuthService(userRepository).Login(request);
                 return Ok(new { Message = "로그인 성공", Token = jwt });
             }
             catch (LoginFailException)

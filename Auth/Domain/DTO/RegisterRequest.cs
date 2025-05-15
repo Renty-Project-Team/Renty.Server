@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Renty.Server.Auth.Domain
+namespace Renty.Server.Auth.Domain.DTO
 {
     public record RegisterRequest
     (

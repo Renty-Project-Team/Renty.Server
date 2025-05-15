@@ -1,4 +1,5 @@
-﻿using Renty.Server.Product.Domain;
+﻿using Renty.Server.Auth.Domain;
+using Renty.Server.Product.Domain;
 
 namespace Renty.Server.Model
 {

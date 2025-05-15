@@ -1,6 +1,6 @@
-﻿using Renty.Server.Model;
+﻿using Renty.Server.Auth.Domain.DTO;
 
-namespace Renty.Server.Auth.Domain
+namespace Renty.Server.Auth.Domain.Repository
 {
     public interface IUserRepository
     {
