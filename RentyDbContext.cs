@@ -223,7 +223,7 @@ namespace Renty.Server
 
             modelBuilder.Entity<WishList>()
                 .HasOne(w => w.Item)
-                .WithMany()
+                .WithMany(i => i.WishLists)
                 .HasForeignKey(w => w.ItemId)
                 .OnDelete(DeleteBehavior.SetNull)
                 .IsRequired(true);

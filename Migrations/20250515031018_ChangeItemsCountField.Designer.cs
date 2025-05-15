@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Renty.Server;
 
@@ -10,9 +11,11 @@ using Renty.Server;
 namespace Renty.Server.Migrations
 {
     [DbContext(typeof(RentyDbContext))]
-    partial class RentyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250515031018_ChangeItemsCountField")]
+    partial class ChangeItemsCountField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.2");
