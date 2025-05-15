@@ -214,7 +214,10 @@ namespace Renty.Server
                 .IsRequired(true);
 
             modelBuilder.Entity<WishList>()
-                .HasIndex(w => w.UserId);
+                .HasIndex(w => new { w.UserId, w.ItemId });
+
+            modelBuilder.Entity<WishList>()
+                .HasIndex(w => w.ItemId);
 
             modelBuilder.Entity<WishList>()
                 .HasOne(w => w.User)
