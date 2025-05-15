@@ -1,15 +1,27 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Renty.Server.Chat.Domain;
 using Renty.Server.Chat.Domain.DTO;
 using Renty.Server.Chat.Domain.Repository;
 using Renty.Server.Exceptions;
 using Renty.Server.Global;
+using System.Data;
 
 namespace Renty.Server.Chat.Infrastructer
 {
     public class ChatRepository(RentyDbContext dbContext) : IChatRepository
     {
+        public async Task<IDbContextTransaction> BeginTransaction()
+        {
+            return await dbContext.Database.BeginTransactionAsync();
+        }
+
+        public async Task Commit(IDbContextTransaction transaction)
+        {
+            await transaction.CommitAsync();
+        }
+
         public async Task UpdateReadAt(int roomId, string userId, DateTime time)
         {
             await dbContext.ChatUsers.Where(u => u.ChatRoomId == roomId && u.UserId == userId && u.LeftAt == null)

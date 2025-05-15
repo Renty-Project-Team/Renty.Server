@@ -255,6 +255,8 @@ namespace Renty.Server.Chat.Service
 
         public async Task LeaveRoom(int roomId, string userId)
         {
+            await using var transaction = await chatRepo.BeginTransaction();
+
             var room = await chatRepo.FindBy(roomId, TimeHelper.GetKoreanTime()) ?? throw new ChatRoomNotFoundException();
             var user = room.ChatUsers.FirstOrDefault(u => u.UserId == userId && u.LeftAt == null) ?? throw new UserNotFoundException();
 
@@ -262,6 +264,8 @@ namespace Renty.Server.Chat.Service
             {
                 var tradeOffer = await tradeOfferRepo.FindBy(room.ItemId, room.ChatUsers.First(u => u.UserId != room.Item.SellerId).UserId);
                 tradeOfferRepo.Remove(tradeOffer!);
+                room.LastMessage = null; // 순환 참조를 끊기 위해서 먼저 null로 저장
+                await chatRepo.Save();
                 chatRepo.Remove(room);
             }
             else
@@ -270,6 +274,7 @@ namespace Renty.Server.Chat.Service
             }
 
             await chatRepo.Save();
+            await chatRepo.Commit(transaction);
         }
 
         public async Task UpdateTradeOffer(TradeOfferRequest request, string callerId)
