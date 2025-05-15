@@ -171,7 +171,6 @@ namespace Renty.Server.Chat.Service
                     newRoom.JoinUser(CreateUser(item.SellerId, buyerName));
 
                     item.AddTradeOffer(CreateTradeOffer(item, buyerId));
-                    item.ChatCount++;
 
                     chatRepo.Add(newRoom);
                     room = newRoom;
@@ -255,7 +254,21 @@ namespace Renty.Server.Chat.Service
 
         public async Task LeaveRoom(int roomId, string userId)
         {
-            await chatRepo.LeaveChatRoom(roomId, userId);
+            var room = await chatRepo.FindBy(roomId, TimeHelper.GetKoreanTime()) ?? throw new ChatRoomNotFoundException();
+            var user = room.ChatUsers.FirstOrDefault(u => u.UserId == userId && u.LeftAt == null) ?? throw new UserNotFoundException();
+
+            if (room.ChatUsers.Count(u => u.LeftAt == null) == 1)
+            {
+                var tradeOffer = await tradeOfferRepo.FindBy(room.ItemId, room.ChatUsers.First(u => u.UserId != room.Item.SellerId).UserId);
+                tradeOfferRepo.Remove(tradeOffer!);
+                chatRepo.Remove(room);
+            }
+            else
+            {
+                user.LeftAt = TimeHelper.GetKoreanTime();
+            }
+
+            await chatRepo.Save();
         }
     }
 }

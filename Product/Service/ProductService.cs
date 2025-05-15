@@ -22,9 +22,7 @@ namespace Renty.Server.Product.Service
                 Title = request.Title,
                 Description = request.Description,
                 Categories = [category],
-                ChatCount = 0,
                 ViewCount = 0,
-                WishCount = 0,
                 CreatedAt = now,
                 ItemImages = [.. imgUrls.Select((url, i) => new ItemImages()
                 {
@@ -71,7 +69,7 @@ namespace Renty.Server.Product.Service
                 PriceUnit = item.PriceUnit,
                 SecurityDeposit = item.SecurityDeposit,
                 ViewCount = item.ViewCount,
-                WishCount = item.WishCount,
+                WishCount = item.WishLists.Count,
                 Categories = [.. item.Categories.Select(c => c.Name)],
                 State = item.State,
                 Description = item.Description,

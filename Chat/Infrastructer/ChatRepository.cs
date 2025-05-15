@@ -16,11 +16,6 @@ namespace Renty.Server.Chat.Infrastructer
                 .ExecuteUpdateAsync(u => u.SetProperty(u => u.LastReadAt, time));
         }
 
-        public async Task LeaveChatRoom(int roomId, string userId)
-        {
-            await dbContext.ChatUsers.Where(u => u.ChatRoomId == roomId && u.UserId == userId && u.LeftAt == null)
-                .ExecuteUpdateAsync(u => u.SetProperty(u => u.LeftAt, TimeHelper.GetKoreanTime()));
-        }
 
         public async Task<ChatRooms?> FindBy(int roomId, DateTime lastReadAt)
         {
@@ -64,6 +59,11 @@ namespace Renty.Server.Chat.Infrastructer
         public void Add(ChatRooms room)
         {
             dbContext.ChatRooms.Add(room);
+        }
+
+        public void Remove(ChatRooms room)
+        {
+            dbContext.ChatRooms.Remove(room);
         }
 
         public async Task Save()

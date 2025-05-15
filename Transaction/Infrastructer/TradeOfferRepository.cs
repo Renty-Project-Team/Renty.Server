@@ -14,6 +14,11 @@ namespace Renty.Server.Transaction.Infrastructer
                 .FirstOrDefaultAsync(offer => offer.ItemId == itemId && offer.BuyerId == buyerId);
         }
 
+        public void Remove(TradeOffers offers)
+        {
+            dbContext.TradeOffers.Remove(offers);
+        }
+
         public async Task Save()
         {
             await dbContext.SaveChangesAsync();

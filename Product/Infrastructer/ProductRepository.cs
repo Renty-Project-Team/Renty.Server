@@ -44,9 +44,9 @@ namespace Renty.Server.Product.Infrastructer
                     PriceUnit = i.PriceUnit,
                     Deposit = i.SecurityDeposit,
                     Categorys = i.Categories.Select(c => c.Name).ToList(),
-                    WishCount = i.WishCount,
+                    WishCount = i.WishLists.Count,
                     ViewCount = i.ViewCount,
-                    ChatCount = i.ChatCount,
+                    ChatCount = i.Chats.Count,
                     CreatedAt = i.CreatedAt,
                     ImageUrl = i.ItemImages.OrderBy(img => img.Order).First().ImageUrl,
                 }).ToListAsync();
