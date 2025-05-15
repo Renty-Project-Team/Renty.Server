@@ -15,7 +15,7 @@ namespace Renty.Server.My.Controller
     public class MyController(MyService sevice, IWishListQuery wishListQuery) : ControllerBase
     {
         [HttpPost("wishlist")]
-        public async Task<IActionResult> AddWishlist(AddWishListRequest request)
+        public async Task<IActionResult> AddWishlist(WishListRequest request)
         {
             try
             {
@@ -41,5 +41,28 @@ namespace Renty.Server.My.Controller
             var wishList = await wishListQuery.GetWishList(userId);
             return Ok(wishList);
         }
+
+        [HttpDelete("wishlist")]
+        public async Task<IActionResult> RemoveWishlist(WishListRequest request)
+        {
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+                await sevice.RemoveWishList(request.ItemId, userId);
+                return Ok();
+            }
+            catch (ItemNotFoundException)
+            {
+                return BadRequest(new ProblemDetails() { Status = 400, Detail = "존재하지 않는 상품입니다." });
+            }
+        }
+
+        //[HttpGet("posts")]
+        //public async Task<ActionResult<ICollection<PostsResponse>>> GetMyPosts()
+        //{
+        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        //    var posts = 
+        //    return Ok(posts);
+        //}
     }
 }

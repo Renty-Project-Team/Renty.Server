@@ -6,10 +6,11 @@ using Renty.Server.Product.Domain;
 using System.Collections;
 using Renty.Server.My.Domain.DTO;
 using Renty.Server.My.Domain.Query;
+using Renty.Server.My.Domain.Repository;
 
 namespace Renty.Server.My.Service
 {
-    public class MyService(IProductRepository productRepo, IWishListQuery wishListQuery)
+    public class MyService(IProductRepository productRepo, IWishListQuery wishListQuery, IWishListRepository wishListRepo)
     {
         private WishList CreateWishList(int itemId, string userId)
         {
@@ -30,6 +31,11 @@ namespace Renty.Server.My.Service
             var wishList = CreateWishList(itemId, userId);
             item.WishLists.Add(wishList);
             await productRepo.Save();
+        }
+
+        public async Task RemoveWishList(int itemId, string userId)
+        {
+            await wishListRepo.Remove(userId, itemId);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Renty.Server.My.Domain.DTO
 {
-    public class AddWishListRequest
+    public class WishListRequest
     {
         public int ItemId { get; set; }
     }
