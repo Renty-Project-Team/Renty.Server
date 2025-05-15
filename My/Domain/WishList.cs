@@ -8,8 +8,8 @@ namespace Renty.Server.My.Domain
         public int Id { get; set; }
         public required string UserId { get; set; }
         public required int ItemId { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public required Users User { get; set; }
-        public required Items Item { get; set; }
+        public required DateTime CreatedAt { get; set; }
+        public Users User { get; set; }
+        public Items Item { get; set; }
     }
 }
