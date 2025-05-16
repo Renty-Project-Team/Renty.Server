@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Renty.Server.Chat.Domain.DTO;
 using Renty.Server.Chat.Service;
 using Renty.Server.Exceptions;
+using Renty.Server.Transaction.Domain.DTO;
 using System.Security.Claims;
 
 namespace Renty.Server.Chat.Controller
