@@ -25,7 +25,7 @@ namespace Renty.Server.Transaction.Domain
         public DateTime? AcceptedAt { get; set; }
         public DateTime? CanceledAt { get; set; }
         public TradeOfferState State { get; set; } = TradeOfferState.Pending;
-
+        public int Version { get; set; }
 
         public Items Item { get; set; }
         public Users Buyer { get; set; }

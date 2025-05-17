@@ -162,6 +162,10 @@ namespace Renty.Server
                 .IsRequired(true);
 
             modelBuilder.Entity<TradeOffers>()
+                .Property(to => to.Version)
+                .ValueGeneratedOnUpdate();
+
+            modelBuilder.Entity<TradeOffers>()
                 .HasIndex(to => new { to.ItemId, to.BuyerId });
 
             modelBuilder.Entity<TradeOffers>()
