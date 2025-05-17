@@ -1,7 +1,7 @@
 ﻿using Renty.Server.Auth.Domain;
 using Renty.Server.Product.Domain;
 
-namespace Renty.Server.Model
+namespace Renty.Server.Transaction.Domain
 {
     public enum TransactionState
     {
@@ -24,6 +24,8 @@ namespace Renty.Server.Model
         public required int ItemId { get; set; }
         public required string BuyerId { get; set; }
         public required decimal FinalPrice { get; set; }
+        public required PriceUnit PriceUnit { get; set; }
+        public required decimal Price { get; set; }
         public required decimal FinalSecurityDeposit { get; set; }
         public required DateTime BorrowStartAt { get; set; }
         public required DateTime ReturnAt { get; set; }
@@ -32,7 +34,7 @@ namespace Renty.Server.Model
         public TransactionState State { get; set; } = TransactionState.PaymentCompleted;
 
 
-        public required Users Buyer { get; set; }
-        public required Items Item { get; set; }
+        public Users Buyer { get; set; }
+        public Items Item { get; set; }
     }
 }

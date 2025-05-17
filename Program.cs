@@ -24,6 +24,7 @@ using Renty.Server.Product.Infrastructer;
 using Renty.Server.Product.Service;
 using Renty.Server.Transaction.Domain.Repository;
 using Renty.Server.Transaction.Infrastructer;
+using Renty.Server.Transaction.Service;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -58,6 +59,7 @@ builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<ChatService>();
 builder.Services.AddScoped<MyService>();
 builder.Services.AddScoped<ChatRoomNotificationService>();
+builder.Services.AddScoped<TransactionService>();
 
 
 // swagger 설정

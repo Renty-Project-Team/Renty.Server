@@ -20,14 +20,14 @@ namespace Renty.Server.Chat.Service
                 Offer = new Offer()
                 {
                     ItemId = tradeOffer.ItemId,
-                    BorrowStartAt = tradeOffer.BorrowStartAt,
-                    ReturnAt = tradeOffer.ReturnAt,
-                    Price = tradeOffer.Price,
-                    SecurityDeposit = tradeOffer.SecurityDeposit,
-                    PriceUnit = tradeOffer.PriceUnit,
-                    State = tradeOffer.State,
                     Title = tradeOffer.Item.Title,
                     ImageUrl = tradeOffer.Item.ItemImages.First().ImageUrl,
+                    Price = tradeOffer.Price,
+                    PriceUnit = tradeOffer.PriceUnit,
+                    SecurityDeposit = tradeOffer.SecurityDeposit,
+                    BorrowStartAt = tradeOffer.BorrowStartAt,
+                    ReturnAt = tradeOffer.ReturnAt,
+                    State = tradeOffer.State,
                     Version = tradeOffer.Version,
                 },
             };

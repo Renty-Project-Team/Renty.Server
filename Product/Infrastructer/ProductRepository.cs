@@ -58,6 +58,7 @@ namespace Renty.Server.Product.Infrastructer
                 .Include(i => i.Seller)
                 .Include(i => i.ItemImages)
                 .Include(i => i.Categories)
+                .Include(i => i.Transactions)
                 .FirstOrDefaultAsync(i => i.Id == itemId);
         }
 

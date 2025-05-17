@@ -1,6 +1,5 @@
 ﻿using Renty.Server.Auth.Domain;
 using Renty.Server.Chat.Domain;
-using Renty.Server.Model;
 using Renty.Server.My.Domain;
 using Renty.Server.Transaction.Domain;
 

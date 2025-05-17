@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using Renty.Server.Auth.Domain;
 using Renty.Server.Chat.Domain;
 using Renty.Server.Global;
-using Renty.Server.Model;
 using Renty.Server.My.Domain;
 using Renty.Server.Product.Domain;
 using Renty.Server.Transaction.Domain;

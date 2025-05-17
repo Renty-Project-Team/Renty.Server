@@ -107,7 +107,10 @@ namespace Renty.Server.Chat.Controller
             {
                 return BadRequest(new ProblemDetails() { Status = 400, Detail = "거래 요청을 수정할 수 없습니다." });
             }
-
-        }
+            catch (InvalidTradeOfferDateException)
+            {
+                return BadRequest(new ProblemDetails() { Status = 400, Detail = "날짜가 잘못되었습니다." });
+            }
+        }       
     }
 }

@@ -71,14 +71,29 @@ namespace Renty.Server.Chat.Service
 
         private TradeOffers CreateTradeOffer(Items item, string buyerId)
         {
-            return new()
+            var transaction = item.Transactions.FirstOrDefault(t => t.BuyerId == buyerId);
+
+            return transaction switch
             {
-                Item = item,
-                Price = item.Price,
-                SecurityDeposit = item.SecurityDeposit,
-                PriceUnit = item.PriceUnit,
-                BuyerId = buyerId,
-                CreatedAt = TimeHelper.GetKoreanTime(),
+                null => new()
+                {
+                    Item = item,
+                    Price = item.Price,
+                    SecurityDeposit = item.SecurityDeposit,
+                    PriceUnit = item.PriceUnit,
+                    BuyerId = buyerId,
+                    CreatedAt = TimeHelper.GetKoreanTime(),
+                },
+                not null => new()
+                {
+                    Item = item,
+                    Price = transaction.Price,
+                    SecurityDeposit = transaction.FinalSecurityDeposit,
+                    PriceUnit = transaction.PriceUnit,
+                    BuyerId = buyerId,
+                    CreatedAt = TimeHelper.GetKoreanTime(),
+                    State = TradeOfferState.Accepted,
+                }
             };
         }
 
@@ -297,6 +312,10 @@ namespace Renty.Server.Chat.Service
             if (tradeOffer.State != TradeOfferState.Pending)
             {
                 throw new InvalidTradeOfferStateException();
+            }
+            if (request.BorrowStartAt < TimeHelper.GetKoreanTime().Date || request.ReturnAt <= request.BorrowStartAt)
+            {
+                throw new InvalidTradeOfferDateException();
             }
 
             tradeOffer.BorrowStartAt = request.BorrowStartAt;

@@ -17,6 +17,7 @@ namespace Renty.Server.Product.Domain.DTO
         public required PriceUnit Unit { get; set; }
 
         [Required(ErrorMessage = "가격은 필수 항목 입니다.")]
+        [Range(0, int.MaxValue, ErrorMessage = "가격은 0원 보다 작을 수 없습니다.")]
         public decimal Price { get; set; }
 
         [Required(ErrorMessage = "내용은 필수 항목 입니다.")]
@@ -24,6 +25,7 @@ namespace Renty.Server.Product.Domain.DTO
         public required string Description { get; set; }
 
         [Required(ErrorMessage = "보증금은 필수 항목 입니다.")]
+        [Range(0, int.MaxValue, ErrorMessage = "보증금은 0원 보다 작을 수 없습니다.")]
         public decimal Deposit { get; set; }
 
         [Required(ErrorMessage = "사진은 필수입니다.")]

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Renty.Server.Chat.Domain;
-using Renty.Server.Model;
 using Renty.Server.My.Domain;
 using Renty.Server.Product.Domain;
 using Renty.Server.Transaction.Domain;
