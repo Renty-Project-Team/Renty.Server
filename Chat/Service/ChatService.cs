@@ -91,6 +91,7 @@ namespace Renty.Server.Chat.Service
                 State = tradeOffer.State,
                 Title = tradeOffer.Item.Title,
                 ImageUrl = tradeOffer.Item.ItemImages.First().ImageUrl,
+                Version = tradeOffer.Version,
             };
             var users = room.ChatUsers.Where(u => u.LeftAt == null)
                 .Select(user => new User
@@ -298,6 +299,7 @@ namespace Renty.Server.Chat.Service
             tradeOffer.Price = request.Price;
             tradeOffer.PriceUnit = request.PriceUnit;
             tradeOffer.SecurityDeposit = request.SecurityDeposit;
+            tradeOffer.Version++;
 
             await tradeOfferRepo.Save();
         }

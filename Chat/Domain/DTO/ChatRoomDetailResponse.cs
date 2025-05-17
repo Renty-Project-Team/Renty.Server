@@ -25,6 +25,7 @@ namespace Renty.Server.Chat.Domain.DTO
         public required DateTime? BorrowStartAt { get; set; }
         public required DateTime? ReturnAt { get; set; }
         public required TradeOfferState State { get; set; }
+        public required int Version { get; set; }
     }
 
     public class User
