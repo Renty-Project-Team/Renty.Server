@@ -1,7 +1,6 @@
 ﻿using Renty.Server.Product.Domain;
-using Renty.Server.Transaction.Domain;
 
-namespace Renty.Server.Transaction.Domain.DTO
+namespace Renty.Server.Chat.Domain.DTO
 {
     public class TradeOfferRequest
     {

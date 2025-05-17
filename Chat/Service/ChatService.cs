@@ -1,16 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
 using Renty.Server.Auth.Domain.Repository;
 using Renty.Server.Chat.Domain;
 using Renty.Server.Chat.Domain.DTO;
 using Renty.Server.Chat.Domain.Repository;
 using Renty.Server.Exceptions;
 using Renty.Server.Global;
-using Renty.Server.Model;
 using Renty.Server.Product.Domain;
 using Renty.Server.Product.Domain.Repository;
 using Renty.Server.Transaction.Domain;
-using Renty.Server.Transaction.Domain.DTO;
 using Renty.Server.Transaction.Domain.Repository;
 
 namespace Renty.Server.Chat.Service
