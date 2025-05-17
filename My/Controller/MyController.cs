@@ -13,7 +13,7 @@ namespace Renty.Server.My.Controller
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class MyController(MyService sevice, IWishListQuery wishListQuery, IUserQuery userQuery, IProductQuery productQuery) : ControllerBase
+    public class MyController(MyService service, IWishListQuery wishListQuery, IUserQuery userQuery, IProductQuery productQuery) : ControllerBase
     {
         [HttpPost("wishlist")]
         public async Task<IActionResult> AddWishlist(WishListRequest request)
@@ -22,7 +22,7 @@ namespace Renty.Server.My.Controller
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
                 var itemId = request.ItemId;
-                await sevice.AddWishList(itemId, userId);
+                await service.AddWishList(itemId, userId);
                 return Ok();
             }
             catch (ItemAlreadyWishListException)
@@ -49,7 +49,7 @@ namespace Renty.Server.My.Controller
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-                await sevice.RemoveWishList(request.ItemId, userId);
+                await service.RemoveWishList(request.ItemId, userId);
                 return Ok();
             }
             catch (ItemNotFoundException)
@@ -72,6 +72,22 @@ namespace Renty.Server.My.Controller
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             var profile = await userQuery.GetProfile(userId);
             return Ok(profile);
+        }
+
+        [HttpPut("profile")]
+        public async Task<IActionResult> UpdateProfile([FromForm] ProfileRequest request)
+        {
+            try
+            {
+                var userName = User.FindFirstValue(ClaimTypes.Name)!;
+                var jwt = await service.UpdateProfile(userName, request);
+                return Ok(new { Token = jwt });
+            }
+            catch (UpdateProfileException e)
+            {
+                foreach (var error in e.Errors) { ModelState.AddModelError(string.Empty, error.Description); }
+                return BadRequest(ModelState);
+            }
         }
     }
 }

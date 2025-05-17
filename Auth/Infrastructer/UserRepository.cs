@@ -13,7 +13,7 @@ namespace Renty.Server.Auth.Infrastructer
 {
     public class UserRepository(UserManager<Users> userManager, IConfiguration configuration) : IUserRepository
     {
-        private string GenerateJwtToken(Users user) // Users는 Identity 사용자 모델
+        public string GenerateJwtToken(Users user) // Users는 Identity 사용자 모델
         {
             var jwtSettings = configuration.GetSection("Jwt");
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!));
@@ -46,7 +46,7 @@ namespace Renty.Server.Auth.Infrastructer
             return tokenHandler.WriteToken(token);
         }
 
-        public async Task<Users?> FindUserOnlyBy(string userName)
+        public async Task<Users?> FindBy(string userName)
         {
             return await userManager.FindByNameAsync(userName);
         }
@@ -68,7 +68,7 @@ namespace Renty.Server.Auth.Infrastructer
             if (!result.Succeeded) throw new RegisterException(result.Errors);
         }
 
-        public async Task<string> CreateJWT(string email, string password)
+        public async Task<string> Login(string email, string password)
         {
             var user = await userManager.FindByEmailAsync(email) ?? throw new LoginFailException();
             if (!await userManager.CheckPasswordAsync(user, password)) throw new LoginFailException();
@@ -83,6 +83,11 @@ namespace Renty.Server.Auth.Infrastructer
             // 로그인 시간 업데이트
             user!.LastLoginAt = TimeHelper.GetKoreanTime();
             await userManager.UpdateAsync(user);
+        }
+
+        public async Task<IdentityResult> Update(Users user)
+        {
+            return await userManager.UpdateAsync(user);
         }
     }
 }

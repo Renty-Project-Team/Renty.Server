@@ -12,7 +12,7 @@ namespace Renty.Server.Auth.Service
 
         public async Task<string> Login(LoginRequest request)
         {
-            var jwt = await userRepository.CreateJWT(request.Email, request.Password);
+            var jwt = await userRepository.Login(request.Email, request.Password);
             await userRepository.UpdateLastLoginAt(request.Email);
             return jwt;
         }

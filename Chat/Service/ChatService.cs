@@ -280,7 +280,7 @@ namespace Renty.Server.Chat.Service
 
         public async Task UpdateTradeOffer(TradeOfferRequest request, string callerId)
         {
-            var buyer = await userRepo.FindUserOnlyBy(request.BuyerName) ?? throw new UserNotFoundException();
+            var buyer = await userRepo.FindBy(request.BuyerName) ?? throw new UserNotFoundException();
             var tradeOffer = await tradeOfferRepo.FindBy(request.ItemId, buyer.Id) ?? throw new TradeOfferNotFoundException();
 
             if (buyer.Id != callerId && tradeOffer.Item.SellerId != callerId)

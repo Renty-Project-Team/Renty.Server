@@ -1,4 +1,5 @@
-﻿using Renty.Server.Auth.Domain.DTO;
+﻿using Microsoft.AspNetCore.Identity;
+using Renty.Server.Auth.Domain.DTO;
 
 namespace Renty.Server.Auth.Domain.Repository
 {
@@ -6,7 +7,9 @@ namespace Renty.Server.Auth.Domain.Repository
     {
         Task Register(RegisterRequest request);
         Task UpdateLastLoginAt(string email);
-        Task<Users?> FindUserOnlyBy(string userName);
-        Task<string> CreateJWT(string email, string password);
+        Task<Users?> FindBy(string userName);
+        Task<string> Login(string email, string password);
+        Task<IdentityResult> Update(Users user);
+        string GenerateJwtToken(Users user);
     }
 }
