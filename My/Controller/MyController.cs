@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Renty.Server.Auth.Domain.Query;
 using Renty.Server.Exceptions;
 using Renty.Server.My.Domain.DTO;
 using Renty.Server.My.Domain.Query;
@@ -70,10 +69,9 @@ namespace Renty.Server.My.Controller
         [HttpGet("profile")]
         public async Task<ActionResult<ProfileResponse>> GetProfile()
         {
-            var userName = User.FindFirstValue(ClaimTypes.Name)!;
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            var userImageUrl = await userQuery.GetProfileImageUrl(userId);
-            return Ok(new ProfileResponse() { UserName = userName, ProfileImage = userImageUrl } );
+            var profile = await userQuery.GetProfile(userId);
+            return Ok(profile);
         }
     }
 }

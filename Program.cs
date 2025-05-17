@@ -6,7 +6,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Renty.Server;
 using Renty.Server.Auth.Domain;
-using Renty.Server.Auth.Domain.Query;
 using Renty.Server.Auth.Domain.Repository;
 using Renty.Server.Auth.Infrastructer;
 using Renty.Server.Chat.Controller;
