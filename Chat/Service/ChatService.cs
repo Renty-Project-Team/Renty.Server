@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Caching.Memory;
 using Renty.Server.Auth.Domain.Repository;
+using Renty.Server.Chat.Controller;
 using Renty.Server.Chat.Domain;
 using Renty.Server.Chat.Domain.DTO;
 using Renty.Server.Chat.Domain.Repository;
@@ -12,7 +14,13 @@ using Renty.Server.Transaction.Domain.Repository;
 
 namespace Renty.Server.Chat.Service
 {
-    public class ChatService(IMemoryCache memoryCache, IChatRepository chatRepo, IProductRepository productRepo, ITradeOfferRepository tradeOfferRepo, IUserRepository userRepo)
+    public class ChatService(IMemoryCache memoryCache, 
+        IChatRepository chatRepo, 
+        IProductRepository productRepo, 
+        ITradeOfferRepository tradeOfferRepo, 
+        IUserRepository userRepo,
+        ChatRoomNotificationService notificationService
+    )
     {
         private static readonly TimeSpan slidingExpiration = TimeSpan.FromMinutes(30);
 
@@ -299,6 +307,7 @@ namespace Renty.Server.Chat.Service
             tradeOffer.Version++;
 
             await tradeOfferRepo.Save();
+            await notificationService.SendTradeOfferUpdatedNotification(buyer, tradeOffer);
         }
     }
 }

@@ -9,6 +9,7 @@ using Renty.Server.Auth.Domain;
 using Renty.Server.Auth.Domain.Repository;
 using Renty.Server.Auth.Infrastructer;
 using Renty.Server.Chat.Controller;
+using Renty.Server.Chat.Domain.Query;
 using Renty.Server.Chat.Domain.Repository;
 using Renty.Server.Chat.Infrastructer;
 using Renty.Server.Chat.Service;
@@ -52,9 +53,11 @@ builder.Services.AddScoped<IWishListQuery, WishListQuery>();
 builder.Services.AddScoped<IWishListRepository, WishListRepository>();
 builder.Services.AddScoped<IUserQuery, UserQuery>();
 builder.Services.AddScoped<IProductQuery, ProductQuery>();
+builder.Services.AddScoped<IChatQuery, ChatQuery>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<ChatService>();
 builder.Services.AddScoped<MyService>();
+builder.Services.AddScoped<ChatRoomNotificationService>();
 
 
 // swagger 설정
