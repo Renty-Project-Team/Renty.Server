@@ -171,7 +171,7 @@ namespace Renty.Server.Chat.Service
 
         public async Task<int> CreateItemChatRoom(int itemId, string buyerId, string buyerName)
         {
-            string cacheKey = $"ChatRoom_{itemId}_{buyerId}";
+            string cacheKey = $"ChatRoom_{itemId}_{buyerName}";
             var semaphore = GetSemaphore(cacheKey);
 
             await semaphore.WaitAsync();
@@ -219,6 +219,64 @@ namespace Renty.Server.Chat.Service
                     }
                 }
                 
+                await chatRepo.Save();
+
+                return room.Id;
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+        }
+
+        public async Task<int> CreateBuyerChatRoom(int itemId, string sellerId, string buyerName)
+        {
+            string cacheKey = $"ChatRoom_{itemId}_{buyerName}";
+            var semaphore = GetSemaphore(cacheKey);
+
+            await semaphore.WaitAsync();
+
+            try
+            {
+                var item = await productRepo.FindBy(itemId) ?? throw new ItemNotFoundException();
+                if (item.Seller.Id != sellerId) throw new SelfChatCreationException();
+
+                var buyer = await userRepo.FindBy(buyerName) ?? throw new UserNotFoundException();
+                var transaction = item.Transactions.FirstOrDefault(t => t.BuyerId == buyer.Id) ?? throw new UserNotFoundException();
+                var room = await chatRepo.FindByItem(itemId, buyer.Id);
+
+                if (room == null)
+                {
+                    var newRoom = CreateRoom(itemId);
+                    newRoom.JoinUser(CreateUser(buyer.Id, item.Seller.UserName!));
+                    newRoom.JoinUser(CreateUser(item.SellerId, buyerName));
+
+                    item.AddTradeOffer(CreateTradeOffer(item, buyer.Id));
+
+                    chatRepo.Add(newRoom);
+                    room = newRoom;
+                }
+                else if (room.ChatUsers.Any(u => u.UserId == sellerId && u.LeftAt == null))
+                {
+                    throw new ChatRoomAlreadyExistsException() { RoomId = room.Id };
+                }
+                else
+                {
+                    var seller = room.ChatUsers.FirstOrDefault(u => u.UserId == sellerId);
+                    if (seller == null)
+                    {
+                        var newUser = CreateUser(sellerId, buyerName);
+                        room.JoinUser(newUser);
+                    }
+                    else
+                    {
+                        var now = TimeHelper.GetKoreanTime();
+                        seller.LeftAt = null;
+                        seller.JoinedAt = now;
+                        seller.LastReadAt = now;
+                    }
+                }
+
                 await chatRepo.Save();
 
                 return room.Id;

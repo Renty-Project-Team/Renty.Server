@@ -40,6 +40,38 @@ namespace Renty.Server.Chat.Controller
             }
         }
 
+        [HttpPost("Create_by_seller")]
+        public async Task<IActionResult> CreateRoom(ChatRoomCreateBySellerRequest request)
+        {
+            try
+            {
+                var sellerId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+                var sellerName = User.FindFirstValue(ClaimTypes.Name)!;
+                if (sellerName == request.BuyerName) throw new SelfChatCreationException();
+
+                var roomId = await roomService.CreateBuyerChatRoom(request.ItemId, sellerId, request.BuyerName);
+                return Ok(new { ChatRoomId = roomId, Message = "채팅방이 생성되었습니다.", Status = "created" });
+            }
+            catch (ChatRoomAlreadyExistsException e)
+            {
+                return Ok(new { ChatRoomId = e.RoomId, Message = "채팅방이 이미 존재합니다.", Status = "exists" });
+            }
+            catch (ItemNotFoundException)
+            {
+                return BadRequest(new { Message = "존재하지 않는 상품입니다." });
+            }
+            catch (SelfChatCreationException)
+            {
+                return BadRequest(new { Message = "자기 자신과 채팅방을 생성할 수 없습니다." });
+            }
+            catch (UserNotFoundException)
+            {
+                return BadRequest(new { Message = "거래가 완료된 사람만 채팅방을 만들 수 있습니다." });
+            }
+        }
+
+
+
         [HttpGet("RoomList")]
         public async Task<ActionResult<ICollection<ChatRoomResponce>>> GetRoomList()
         {

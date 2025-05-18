@@ -233,8 +233,7 @@ namespace Renty.Server
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var dataStorage = settings.Value.DataStorage;
-            optionsBuilder.UseSqlite($"Data Source={dataStorage}/database.db")
-                .LogTo(Console.WriteLine, LogLevel.Information);
+            optionsBuilder.UseSqlite($"Data Source={dataStorage}/database.db");
         }
     }
 }

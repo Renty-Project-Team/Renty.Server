@@ -43,7 +43,7 @@ namespace Renty.Server.Chat.Infrastructer
         public async Task<ChatRooms?> FindByItem(int itemId, string userId)
         {
             return await dbContext.ChatRooms
-                .Include(room => room.ChatUsers.Where(user => user.UserId == userId))
+                .Include(room => room.ChatUsers)
                 .FirstOrDefaultAsync(room => room.ItemId == itemId && room.ChatUsers.Any(user => user.UserId == userId));
         }
 
