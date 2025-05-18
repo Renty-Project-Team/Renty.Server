@@ -18,6 +18,7 @@ namespace Renty.Server.Transaction.Infrastructer
         {
             return await dbContext.Transactions
                 .Include(t => t.Item)
+                    .ThenInclude(i => i.ItemImages)
                 .Include(t => t.Buyer)
                 .Where(t => t.Item.SellerId == sellerId)
                 .Select(t =>
@@ -34,6 +35,7 @@ namespace Renty.Server.Transaction.Infrastructer
                         ReturnAt = t.ReturnAt,
                         Name = t.Buyer.UserName!,
                         State = t.State,
+                        ItemImageUrl = t.Item.ItemImages.FirstOrDefault()!.ImageUrl,
                     }
                 )
                 .ToListAsync();
@@ -44,6 +46,8 @@ namespace Renty.Server.Transaction.Infrastructer
             return await dbContext.Transactions
                 .Include(t => t.Item)
                     .ThenInclude(i => i.Seller)
+                .Include(t => t.Item)
+                    .ThenInclude(i => i.ItemImages)
                 .Include(t => t.Buyer)
                 .Where(t => t.BuyerId == buyerId)
                 .Select(t =>
@@ -60,6 +64,7 @@ namespace Renty.Server.Transaction.Infrastructer
                         ReturnAt = t.ReturnAt,
                         Name = t.Item.Seller.UserName!,
                         State = t.State,
+                        ItemImageUrl = t.Item.ItemImages.FirstOrDefault()!.ImageUrl,
                     }
                 )
                 .ToListAsync();
