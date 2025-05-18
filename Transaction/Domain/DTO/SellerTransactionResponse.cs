@@ -1,0 +1,19 @@
+﻿using Renty.Server.Product.Domain;
+
+namespace Renty.Server.Transaction.Domain.DTO
+{
+    public class SellerTransactionResponse
+    {
+        public required int ItemId { get; set; }
+        public required string Title { get; set; }
+        public required PriceUnit PriceUnit { get; set; }
+        public required decimal Price { get; set; }
+        public required decimal FinalPrice { get; set; }
+        public required decimal FinalSecurityDeposit { get; set; }
+        public required DateTime CreatedAt { get; set; }
+        public required DateTime BorrowStartAt { get; set; }
+        public required DateTime ReturnAt { get; set; }
+        public required string BuyerName { get; set; }
+        public required TransactionState State { get; set; }
+    }
+}
