@@ -99,9 +99,6 @@ namespace Renty.Server
                 .HasIndex(c => c.UpdatedAt);
 
             modelBuilder.Entity<ChatRooms>()
-                .HasQueryFilter(room => room.DeletedAt == null);
-
-            modelBuilder.Entity<ChatRooms>()
                 .HasOne(c => c.Item)
                 .WithMany(i => i.Chats)
                 .HasForeignKey(c => c.ItemId)
@@ -236,7 +233,8 @@ namespace Renty.Server
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var dataStorage = settings.Value.DataStorage;
-            optionsBuilder.UseSqlite($"Data Source={dataStorage}/database.db");
+            optionsBuilder.UseSqlite($"Data Source={dataStorage}/database.db")
+                .LogTo(Console.WriteLine, LogLevel.Information);
         }
     }
 }

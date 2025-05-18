@@ -15,7 +15,6 @@ namespace Renty.Server.Chat.Domain
         public required int ChatCount { get; set; }
         public required DateTime CreatedAt { get; set; }
         public required DateTime UpdatedAt { get; set; }
-        public DateTime? DeletedAt { get; set; }
 
         public Items Item { get; set; }
         public List<ChatUsers> ChatUsers { get; set; } = [];
