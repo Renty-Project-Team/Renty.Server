@@ -32,7 +32,6 @@ namespace Renty.Server.Auth.Domain
         public string? AccountNumber { get; set; }
         public float MannerScore { get; set; }
         public string? ProfileImage { get; set; }
-        public int TotalIncome { get; set; }
 
         public List<Items> Items { get; set; } = [];
         public List<TradeOffers> ProspectiveRentalList { get; set; } = [];

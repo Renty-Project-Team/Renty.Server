@@ -2,10 +2,11 @@
 using Renty.Server.Auth.Domain;
 using Renty.Server.My.Domain.DTO;
 using Renty.Server.My.Domain.Query;
+using Renty.Server.Transaction.Domain.Query;
 
 namespace Renty.Server.My.Infrastructer
 {
-    public class UserQuery(UserManager<Users> userManager) : IUserQuery
+    public class UserQuery(UserManager<Users> userManager, ITransactionQuery transactionQuery) : IUserQuery
     {
         public async Task<ProfileResponse> GetProfile(string userId)
         {
@@ -19,7 +20,7 @@ namespace Renty.Server.My.Infrastructer
                 AccountNumber = user.AccountNumber,
                 PhoneNumber = user.PhoneNumber!,
                 MannerScore = user.MannerScore,
-                TotalIncome = user.TotalIncome,
+                TotalIncome = (await transactionQuery.FindBy(user.Id)).Sum(t => t.FinalPrice),
             };
         }
     }
