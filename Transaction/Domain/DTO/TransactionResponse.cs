@@ -2,7 +2,7 @@
 
 namespace Renty.Server.Transaction.Domain.DTO
 {
-    public class SellerTransactionResponse
+    public class TransactionResponse
     {
         public required int ItemId { get; set; }
         public required string Title { get; set; }
@@ -13,7 +13,7 @@ namespace Renty.Server.Transaction.Domain.DTO
         public required DateTime CreatedAt { get; set; }
         public required DateTime BorrowStartAt { get; set; }
         public required DateTime ReturnAt { get; set; }
-        public required string BuyerName { get; set; }
+        public required string Name { get; set; }
         public required TransactionState State { get; set; }
     }
 }

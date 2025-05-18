@@ -14,14 +14,14 @@ namespace Renty.Server.Transaction.Infrastructer
                 .ToListAsync();
         }
 
-        public async Task<ICollection<SellerTransactionResponse>> FindBySeller(string sellerId)
+        public async Task<ICollection<TransactionResponse>> FindBySeller(string sellerId)
         {
             return await dbContext.Transactions
                 .Include(t => t.Item)
                 .Include(t => t.Buyer)
                 .Where(t => t.Item.SellerId == sellerId)
                 .Select(t =>
-                    new SellerTransactionResponse()
+                    new TransactionResponse()
                     {
                         ItemId = t.ItemId,
                         Title = t.Item.Title,
@@ -32,7 +32,33 @@ namespace Renty.Server.Transaction.Infrastructer
                         CreatedAt = t.CreatedAt,
                         BorrowStartAt = t.BorrowStartAt,
                         ReturnAt = t.ReturnAt,
-                        BuyerName = t.Buyer.Name,
+                        Name = t.Buyer.UserName!,
+                        State = t.State,
+                    }
+                )
+                .ToListAsync();
+        }
+
+        public async Task<ICollection<TransactionResponse>> FindByBuyer(string buyerId)
+        {
+            return await dbContext.Transactions
+                .Include(t => t.Item)
+                    .ThenInclude(i => i.Seller)
+                .Include(t => t.Buyer)
+                .Where(t => t.BuyerId == buyerId)
+                .Select(t =>
+                    new TransactionResponse()
+                    {
+                        ItemId = t.ItemId,
+                        Title = t.Item.Title,
+                        PriceUnit = t.PriceUnit,
+                        Price = t.Price,
+                        FinalPrice = t.FinalPrice,
+                        FinalSecurityDeposit = t.FinalSecurityDeposit,
+                        CreatedAt = t.CreatedAt,
+                        BorrowStartAt = t.BorrowStartAt,
+                        ReturnAt = t.ReturnAt,
+                        Name = t.Item.Seller.UserName!,
                         State = t.State,
                     }
                 )

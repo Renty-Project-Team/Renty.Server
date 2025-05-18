@@ -41,10 +41,18 @@ namespace Renty.Server.Transaction.Controller
         }
 
         [HttpGet("seller")]
-        public async Task<ActionResult<ICollection<SellerTransactionResponse>>> GetSellerTransactions()
+        public async Task<ActionResult<ICollection<TransactionResponse>>> GetSellerTransactions()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             var transactions = await transactionQuery.FindBySeller(userId);
+            return Ok(transactions);
+        }
+
+        [HttpGet("buyer")]
+        public async Task<ActionResult<ICollection<TransactionResponse>>> GetBuyerTransactions()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var transactions = await transactionQuery.FindByBuyer(userId);
             return Ok(transactions);
         }
     }
