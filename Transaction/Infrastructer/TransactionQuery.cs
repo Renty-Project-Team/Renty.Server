@@ -7,11 +7,11 @@ namespace Renty.Server.Transaction.Infrastructer
 {
     public class TransactionQuery(RentyDbContext dbContext) : ITransactionQuery
     {
-        public async Task<ICollection<Transactions>> FindBy(string userId)
+        public async Task<decimal> GetTotalIncome(string userId)
         {
             return await dbContext.Transactions
-                .Where(t => t.BuyerId == userId)
-                .ToListAsync();
+                .Where(t => t.Item.SellerId == userId)
+                .SumAsync(t => t.FinalPrice);
         }
 
         public async Task<ICollection<TransactionResponse>> FindBySeller(string sellerId)

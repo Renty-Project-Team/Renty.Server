@@ -20,7 +20,7 @@ namespace Renty.Server.My.Infrastructer
                 AccountNumber = user.AccountNumber,
                 PhoneNumber = user.PhoneNumber!,
                 MannerScore = user.MannerScore,
-                TotalIncome = (await transactionQuery.FindBy(user.Id)).Sum(t => t.FinalPrice),
+                TotalIncome = await transactionQuery.GetTotalIncome(user.Id),
             };
         }
     }
