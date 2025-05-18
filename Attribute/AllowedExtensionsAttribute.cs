@@ -44,7 +44,7 @@ namespace Renty.Server.Attribute
             {
                 if (file != null)
                 {
-                    if (CheckExtension(file)) return new ValidationResult(ErrorMessage);
+                    if (!CheckExtension(file)) return new ValidationResult(ErrorMessage);
                 }
             }
 
