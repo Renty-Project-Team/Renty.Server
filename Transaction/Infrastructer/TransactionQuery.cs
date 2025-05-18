@@ -20,11 +20,15 @@ namespace Renty.Server.Transaction.Infrastructer
                 .Include(t => t.Item)
                     .ThenInclude(i => i.ItemImages)
                 .Include(t => t.Buyer)
+                .Include(t => t.Item)
+                    .ThenInclude(i => i.Chats)
+                        .ThenInclude(c => c.ChatUsers)
                 .Where(t => t.Item.SellerId == sellerId)
                 .Select(t =>
                     new TransactionResponse()
                     {
                         ItemId = t.ItemId,
+                        RoomId = t.Item.Chats.FirstOrDefault(c => c.ChatUsers.All(u => (u.UserId == sellerId && u.LeftAt == null) || u.UserId == t.BuyerId))!.Id,
                         Title = t.Item.Title,
                         PriceUnit = t.PriceUnit,
                         Price = t.Price,
@@ -48,12 +52,16 @@ namespace Renty.Server.Transaction.Infrastructer
                     .ThenInclude(i => i.Seller)
                 .Include(t => t.Item)
                     .ThenInclude(i => i.ItemImages)
+                .Include(t => t.Item)
+                    .ThenInclude(i => i.Chats)
+                        .ThenInclude(c => c.ChatUsers)
                 .Include(t => t.Buyer)
                 .Where(t => t.BuyerId == buyerId)
                 .Select(t =>
                     new TransactionResponse()
                     {
                         ItemId = t.ItemId,
+                        RoomId = t.Item.Chats.FirstOrDefault(c => c.ChatUsers.All(u => (u.UserId == buyerId && u.LeftAt == null) || u.UserId == t.Item.SellerId))!.Id,
                         Title = t.Item.Title,
                         PriceUnit = t.PriceUnit,
                         Price = t.Price,
