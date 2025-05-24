@@ -50,5 +50,29 @@ namespace Renty.Server.Product.Controller
                 return NotFound(new ProblemDetails() { Status = 404, Detail = "존재하지 않는 게시글입니다." });
             }
         }
+
+        [HttpPut("review")]
+        [Authorize]
+        public async Task<IActionResult> Review([FromForm] ReviewRequest request)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            try
+            {
+                await productService.PutReview(request, userId);
+                return Ok(new { Message = "리뷰 등록을 성공했습니다." });
+            }
+            catch (ItemNotFoundException)
+            {
+                return BadRequest(new ProblemDetails() { Status = 400, Detail = "상품을 찾을 수 없습니다." });
+            }
+            catch (TransactionNotFoundException)
+            {
+                return BadRequest(new ProblemDetails() { Status = 400, Detail = "거래 내역이 없습니다." });
+            }
+            catch (SelfReviewNotAllowedException)
+            {
+                return BadRequest(new ProblemDetails() { Status = 400, Detail = "자신에게 리뷰를 작성할 수 없습니다." });
+            }
+        }
     }
 }
