@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Renty.Server.Exceptions;
 using Renty.Server.Post.Domain.DTO;
 using Renty.Server.Post.Domain.Repository;
 using Renty.Server.Post.Service;
@@ -35,11 +36,16 @@ namespace Renty.Server.Post.Controller
         }
 
         [HttpGet("detail")]
-        public async Task<IActionResult> GetPost(int postId)
+        public async Task<ActionResult<BuyerPostDetailResponse>> GetPost(int postId)
         {
-            // Handle fetching a single post by ID logic here
-            // For example, retrieve the post from a database
-            return Ok(new { Message = $"Post {postId} retrieved successfully." });
+            try
+            {
+                return Ok(await postQuery.Detail(postId));
+            }
+            catch (InvalidOperationException)
+            {
+                return BadRequest(new ProblemDetails() { Status = 400, Detail = "게시글을 찾을 수 없습니다.", });
+            }
         }
     }
 }

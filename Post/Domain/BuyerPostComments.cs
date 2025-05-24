@@ -29,7 +29,7 @@ namespace Renty.Server.Post.Domain
 
         // Navigation properties
         public Users User { get; set; }
-        public Items Item { get; set; }
+        public Items? Item { get; set; }
         public BuyerPosts BuyerPost { get; set; }
     }
 }

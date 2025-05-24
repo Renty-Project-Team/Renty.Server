@@ -9,6 +9,56 @@ namespace Renty.Server.Post.Infrastructer
 {
     public class PostQuery(RentyDbContext dbContext) : IPostQuery
     {
+        public async Task<BuyerPostDetailResponse> Detail(int postId)
+        {
+            var post = await dbContext.BuyerPosts
+                .Include(post => post.BuyerUser)
+                .Include(post => post.Category)
+                .Include(post => post.Images)
+                .Include(post => post.Comments)
+                    .ThenInclude(comment => comment.User)
+                .Include(post => post.Comments)
+                    .ThenInclude(comment => comment.Item)
+                .FirstAsync(post => post.Id == postId);
+
+            post.ViewCount++;
+            await dbContext.SaveChangesAsync();
+
+            return new()
+            {
+                PostId = post.Id,
+                Category = post.Category.Name,
+                Description = post.Description,
+                Title = post.Title,
+                UserName = post.BuyerUser.UserName!,
+                ViewCount = post.ViewCount,
+                CreatedAt = post.CreatedAt,
+                ImagesUrl = [.. post.Images.OrderBy(img => img.DisplayOrder).Select(img => img.ImageUrl)],
+
+                Comments = [.. post.Comments.Select(comment => new Comment()
+                {
+                    CommentId = comment.Id,
+                    Content = comment.Content,
+                    CreatedAt = comment.CreatedAt,
+                    UserName = comment.User.UserName!,
+
+                    ItemDetail = comment.Item switch 
+                    {
+                        null => null,
+                        not null => new ItemDetail()
+                        {
+                            ItemId = comment.Item.Id,
+                            Deposit = comment.Item.SecurityDeposit,
+                            ImageUrl = comment.Item.ItemImages.OrderBy(img => img.Order).First().ImageUrl,
+                            Price = comment.Item.Price,
+                            PriceUnit = comment.Item.PriceUnit,
+                            Title = comment.Item.Title
+                        }
+                    }
+                })],
+            };
+        }
+
         public async Task<ICollection<BuyerPostResponse>> Take(BuyerPostsRequest request)
         {
             var query = dbContext.BuyerPosts.AsNoTracking().AsQueryable();
