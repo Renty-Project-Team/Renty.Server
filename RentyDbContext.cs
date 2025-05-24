@@ -5,7 +5,9 @@ using Renty.Server.Auth.Domain;
 using Renty.Server.Chat.Domain;
 using Renty.Server.Global;
 using Renty.Server.My.Domain;
+using Renty.Server.Post.Domain;
 using Renty.Server.Product.Domain;
+using Renty.Server.Review.Domain;
 using Renty.Server.Transaction.Domain;
 
 namespace Renty.Server
@@ -21,6 +23,11 @@ namespace Renty.Server
         public DbSet<TradeOffers> TradeOffers { get; set; }
         public DbSet<Transactions> Transactions { get; set; }
         public DbSet<WishList> WishLists { get; set; }
+        public DbSet<BuyerPosts> BuyerPosts { get; set; }
+        public DbSet<BuyerPostComments> BuyerComments { get; set; }
+        public DbSet<Reviews> Reviews { get; set; }
+        public DbSet<ReviewImages> ReviewImages { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -228,6 +235,75 @@ namespace Renty.Server
                 .HasForeignKey(w => w.ItemId)
                 .OnDelete(DeleteBehavior.SetNull)
                 .IsRequired(true);
+
+            // BuyerPost 엔터티 설정
+            modelBuilder.Entity<BuyerPosts>(entity =>
+            {
+                // 속성 설정
+                entity.Property(bp => bp.Title)
+                      .HasMaxLength(255);
+
+                entity.Property(bp => bp.Description)
+                      .HasMaxLength(1000);
+
+                // 관계 설정: BuyerPost -> User (다대일)
+                // BuyerPost는 하나의 User(BuyerUser)를 가짐
+                // User는 여러 BuyerPost를 가질 수 있음
+                entity.HasOne(bp => bp.BuyerUser)          // BuyerPost 엔터티의 BuyerUser 네비게이션 속성
+                      .WithMany(u => u.BuyerPosts)        // User 엔터티의 BuyerPosts 컬렉션 네비게이션 속성
+                      .HasForeignKey(bp => bp.BuyerUserId) // BuyerPost 엔터티의 외래 키
+                      .OnDelete(DeleteBehavior.Cascade) // 사용자가 삭제될 때 관련된 게시글이 있으면 삭제 방지 (요구사항에 따라 Cascade, SetNull 등으로 변경 가능)
+                      .IsRequired(true);
+            });
+
+            // BuyerPostComment 엔터티 설정
+            modelBuilder.Entity<BuyerPostComments>(entity =>
+            {
+                entity.HasOne(bc => bc.Item)
+                      .WithMany(i => i.BuyerPostComments)
+                      .HasForeignKey(bc => bc.ItemId)
+                      .OnDelete(DeleteBehavior.Cascade)
+                      .IsRequired(true);
+
+                entity.HasOne(bc => bc.BuyerPost)
+                      .WithMany(bp => bp.Comments)
+                      .HasForeignKey(bc => bc.BuyerPostId)
+                      .OnDelete(DeleteBehavior.Cascade)
+                      .IsRequired(true);
+
+                entity.HasOne(bc => bc.User)
+                      .WithMany(u => u.BuyerPostComments)
+                      .HasForeignKey(bc => bc.UserId)
+                      .OnDelete(DeleteBehavior.Cascade)
+                      .IsRequired(true);
+            });
+
+            modelBuilder.Entity<Reviews>(entity =>
+            {
+                entity.Property(r => r.Content)
+                      .HasMaxLength(1000);
+
+                entity.HasOne(r => r.Reviewer)
+                      .WithMany(u => u.Reviews)
+                      .HasForeignKey(r => r.ReviewerId)
+                      .OnDelete(DeleteBehavior.Cascade)
+                      .IsRequired(true);
+
+                entity.HasOne(r => r.Reviewee)
+                      .WithMany(u => u.Reviewees)
+                      .HasForeignKey(r => r.RevieweeId)
+                      .OnDelete(DeleteBehavior.Cascade)
+                      .IsRequired(true);
+            });
+
+            modelBuilder.Entity<ReviewImages>(entity =>
+            {
+                entity.HasOne(ri => ri.Review)
+                      .WithMany(r => r.Images)
+                      .HasForeignKey(ri => ri.ReviewId)
+                      .OnDelete(DeleteBehavior.Cascade)
+                      .IsRequired(true);
+            });
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

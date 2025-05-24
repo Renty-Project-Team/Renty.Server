@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Renty.Server.Chat.Domain;
 using Renty.Server.My.Domain;
+using Renty.Server.Post.Domain;
 using Renty.Server.Product.Domain;
+using Renty.Server.Review.Domain;
 using Renty.Server.Transaction.Domain;
 
 namespace Renty.Server.Auth.Domain
@@ -34,9 +36,13 @@ namespace Renty.Server.Auth.Domain
         public string? ProfileImage { get; set; }
 
         public List<Items> Items { get; set; } = [];
+        public List<BuyerPosts> BuyerPosts { get; set; } = [];
+        public List<BuyerPostComments> BuyerPostComments { get; set; } = [];
         public List<TradeOffers> ProspectiveRentalList { get; set; } = [];
         public List<Transactions> RentalHistory { get; set; } = [];
         public List<WishList> WishLists { get; set; } = [];
         public List<ChatUsers> ChatUsers { get; set; } = [];
+        public List<Reviews> Reviews { get; set; } = [];
+        public List<Reviews> Reviewees { get; set; } = [];
     }
 }
