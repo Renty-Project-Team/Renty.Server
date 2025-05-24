@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Renty.Server.Post.Domain.DTO;
+using Renty.Server.Post.Domain.Repository;
 using Renty.Server.Post.Service;
 using System.Security.Claims;
 
@@ -8,7 +9,7 @@ namespace Renty.Server.Post.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PostController(PostService service) : ControllerBase
+    public class PostController(PostService service, IPostQuery postQuery) : ControllerBase
     {
         [Authorize]
         [HttpPost("upload")]
@@ -28,11 +29,9 @@ namespace Renty.Server.Post.Controller
         }
 
         [HttpGet("posts")]
-        public async Task<IActionResult> GetPosts()
+        public async Task<ActionResult<ICollection<BuyerPostResponse>>> GetPosts([FromQuery] BuyerPostsRequest request)
         {
-            // Handle fetching posts logic here
-            // For example, retrieve posts from a database
-            return Ok(new { Message = "Posts retrieved successfully." });
+            return Ok(await postQuery.Take(request));
         }
 
         [HttpGet("detail")]

@@ -61,6 +61,7 @@ builder.Services.AddScoped<IProductQuery, ProductQuery>();
 builder.Services.AddScoped<IChatQuery, ChatQuery>();
 builder.Services.AddScoped<ITransactionQuery, TransactionQuery>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IPostQuery, PostQuery>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<ChatService>();
 builder.Services.AddScoped<MyService>();
