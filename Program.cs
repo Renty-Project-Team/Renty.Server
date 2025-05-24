@@ -18,6 +18,9 @@ using Renty.Server.My.Domain.Query;
 using Renty.Server.My.Domain.Repository;
 using Renty.Server.My.Infrastructer;
 using Renty.Server.My.Service;
+using Renty.Server.Post.Domain.Repository;
+using Renty.Server.Post.Infrastructer;
+using Renty.Server.Post.Service;
 using Renty.Server.Product.Domain.Query;
 using Renty.Server.Product.Domain.Repository;
 using Renty.Server.Product.Infrastructer;
@@ -57,11 +60,13 @@ builder.Services.AddScoped<IUserQuery, UserQuery>();
 builder.Services.AddScoped<IProductQuery, ProductQuery>();
 builder.Services.AddScoped<IChatQuery, ChatQuery>();
 builder.Services.AddScoped<ITransactionQuery, TransactionQuery>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<ChatService>();
 builder.Services.AddScoped<MyService>();
 builder.Services.AddScoped<ChatRoomNotificationService>();
 builder.Services.AddScoped<TransactionService>();
+builder.Services.AddScoped<PostService>();
 
 
 // swagger 설정
