@@ -2,6 +2,7 @@
 using Renty.Server.Chat.Domain;
 using Renty.Server.My.Domain;
 using Renty.Server.Post.Domain;
+using Renty.Server.Review.Domain;
 using Renty.Server.Transaction.Domain;
 
 namespace Renty.Server.Product.Domain
@@ -36,6 +37,7 @@ namespace Renty.Server.Product.Domain
         public List<Transactions> Transactions { get; set; } = [];
         public List<WishList> WishLists { get; set; } = [];
         public List<BuyerPostComments> BuyerPostComments { get; set; } = [];
+        public List<Reviews> Reviews { get; set; } = [];
 
         public void AddTradeOffer(TradeOffers tradeOffer)
         {

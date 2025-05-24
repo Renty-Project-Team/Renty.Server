@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Renty.Server;
 
@@ -10,9 +11,11 @@ using Renty.Server;
 namespace Renty.Server.Migrations
 {
     [DbContext(typeof(RentyDbContext))]
-    partial class RentyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250524042513_SetEnumToStringReviews")]
+    partial class SetEnumToStringReviews
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.2");
@@ -671,10 +674,6 @@ namespace Renty.Server.Migrations
                         .HasColumnType("TEXT")
                         .HasComment("리뷰 내용");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT")
-                        .HasComment("리뷰 작성 시간");
-
                     b.Property<int>("ItemId")
                         .HasColumnType("INTEGER")
                         .HasComment("아이템 id");
@@ -695,9 +694,6 @@ namespace Renty.Server.Migrations
 
                     b.Property<string>("SellerEvaluation")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -1033,7 +1029,7 @@ namespace Renty.Server.Migrations
             modelBuilder.Entity("Renty.Server.Review.Domain.Reviews", b =>
                 {
                     b.HasOne("Renty.Server.Product.Domain.Items", "Item")
-                        .WithMany("Reviews")
+                        .WithMany()
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1140,8 +1136,6 @@ namespace Renty.Server.Migrations
                     b.Navigation("Chats");
 
                     b.Navigation("ItemImages");
-
-                    b.Navigation("Reviews");
 
                     b.Navigation("TradeOffers");
 

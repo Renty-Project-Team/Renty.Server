@@ -7,7 +7,7 @@ namespace Renty.Server.Review.Domain
         public int Id { get; set; } // PK
 
         [Comment("리뷰 id")]
-        public required int ReviewId { get; set; } // FK to Review
+        public int ReviewId { get; set; } // FK to Review
 
         [Comment("이미지 경로")]
         public required string ImageUrl { get; set; }
@@ -19,6 +19,6 @@ namespace Renty.Server.Review.Domain
         public required DateTime UploadedAt { get; set; }
 
         // Navigation property
-        public Reviews Review { get; set; }
+        public required Reviews Review { get; set; }
     }
 }

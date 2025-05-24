@@ -282,6 +282,9 @@ namespace Renty.Server
             {
                 entity.Property(r => r.Content)
                       .HasMaxLength(1000);
+                
+                entity.Property(r => r.SellerEvaluation)
+                      .HasConversion<string>();
 
                 entity.HasOne(r => r.Reviewer)
                       .WithMany(u => u.Reviews)
@@ -292,6 +295,12 @@ namespace Renty.Server
                 entity.HasOne(r => r.Reviewee)
                       .WithMany(u => u.Reviewees)
                       .HasForeignKey(r => r.RevieweeId)
+                      .OnDelete(DeleteBehavior.Cascade)
+                      .IsRequired(true);
+
+                entity.HasOne(r => r.Item)
+                      .WithMany(i => i.Reviews)
+                      .HasForeignKey(r => r.ItemId)
                       .OnDelete(DeleteBehavior.Cascade)
                       .IsRequired(true);
             });

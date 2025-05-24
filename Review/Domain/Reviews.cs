@@ -2,9 +2,17 @@
 using Renty.Server.Auth.Domain;
 using Renty.Server.Chat.Domain.DTO;
 using Renty.Server.Product.Domain;
+using System.ComponentModel.DataAnnotations;
 
 namespace Renty.Server.Review.Domain
 {
+    public enum SellerEvaluation
+    {
+        None = 0,
+        Good = 1,
+        Bad = 2
+    }
+
     public class Reviews
     {
         public int Id { get; set; } // PK
@@ -21,8 +29,15 @@ namespace Renty.Server.Review.Domain
         [Comment("만족도 (5점 만점)")]
         public required float Satisfaction { get; set; } // 예: 1.0, 2.5, 5.0
 
+        [EnumDataType(typeof(SellerEvaluation))]
+        public required SellerEvaluation SellerEvaluation { get; set; }
+
         [Comment("리뷰 내용")]
         public required string Content { get; set; }
+
+        [Comment("리뷰 작성 시간")]
+        public required DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
 
         // Navigation properties
         public Users Reviewee { get; set; } // 판매자 (리뷰 대상)
