@@ -246,6 +246,8 @@ namespace Renty.Server
                 entity.Property(bp => bp.Description)
                       .HasMaxLength(1000);
 
+                entity.HasIndex(bp => new { bp.CreatedAt, bp.CategoryId });
+
                 // 관계 설정: BuyerPost -> User (다대일)
                 // BuyerPost는 하나의 User(BuyerUser)를 가짐
                 // User는 여러 BuyerPost를 가질 수 있음
@@ -254,6 +256,12 @@ namespace Renty.Server
                       .HasForeignKey(bp => bp.BuyerUserId) // BuyerPost 엔터티의 외래 키
                       .OnDelete(DeleteBehavior.Cascade) // 사용자가 삭제될 때 관련된 게시글이 있으면 삭제 방지 (요구사항에 따라 Cascade, SetNull 등으로 변경 가능)
                       .IsRequired(true);
+
+                entity.HasOne(bp => bp.Category)
+                        .WithMany(c => c.BuyerPosts)
+                        .HasForeignKey(bp => bp.CategoryId)
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired(false);
             });
 
             // BuyerPostComment 엔터티 설정

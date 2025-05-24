@@ -1,4 +1,6 @@
-﻿namespace Renty.Server.Product.Domain
+﻿using Renty.Server.Post.Domain;
+
+namespace Renty.Server.Product.Domain
 {
     public enum CategoryType
     {
@@ -22,5 +24,6 @@
         public required CategoryType Name { get; set; }
 
         public List<Items> Items { get; set; } = [];
+        public List<BuyerPosts> BuyerPosts { get; set; } = [];
     }
 }
