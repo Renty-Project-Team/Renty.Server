@@ -16,6 +16,7 @@ namespace Renty.Server.Transaction.Domain.DTO
         public required DateTime BorrowStartAt { get; set; }
         public required DateTime ReturnAt { get; set; }
         public required string Name { get; set; }
+        public required string? ProfileImage { get; set; }
         public required TransactionState State { get; set; }
     }
 }

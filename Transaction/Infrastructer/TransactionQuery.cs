@@ -38,6 +38,7 @@ namespace Renty.Server.Transaction.Infrastructer
                         BorrowStartAt = t.BorrowStartAt,
                         ReturnAt = t.ReturnAt,
                         Name = t.Buyer.UserName!,
+                        ProfileImage = t.Buyer.ProfileImage,
                         State = t.State,
                         ItemImageUrl = t.Item.ItemImages.FirstOrDefault()!.ImageUrl,
                     }
@@ -71,6 +72,7 @@ namespace Renty.Server.Transaction.Infrastructer
                         BorrowStartAt = t.BorrowStartAt,
                         ReturnAt = t.ReturnAt,
                         Name = t.Item.Seller.UserName!,
+                        ProfileImage = t.Item.Seller.ProfileImage,
                         State = t.State,
                         ItemImageUrl = t.Item.ItemImages.FirstOrDefault()!.ImageUrl,
                     }
