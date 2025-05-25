@@ -270,8 +270,8 @@ namespace Renty.Server
                 entity.HasOne(bc => bc.Item)
                       .WithMany(i => i.BuyerPostComments)
                       .HasForeignKey(bc => bc.ItemId)
-                      .OnDelete(DeleteBehavior.Cascade)
-                      .IsRequired(true);
+                      .OnDelete(DeleteBehavior.SetNull)
+                      .IsRequired(false);
 
                 entity.HasOne(bc => bc.BuyerPost)
                       .WithMany(bp => bp.Comments)
