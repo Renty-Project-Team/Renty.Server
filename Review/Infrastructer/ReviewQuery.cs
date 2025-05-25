@@ -19,6 +19,7 @@ namespace Renty.Server.Review.Infrastructer
                     SellerName = r.Reviewee.UserName!,
                     SellerProfileImageUrl = r.Reviewee.ProfileImage,
                     BuyerName = r.Reviewer.UserName!,
+                    BuyerProfileImageUrl = r.Reviewer.ProfileImage,
                     Satisfaction = r.Satisfaction,
                     Content = r.Content,
                     SellerEvaluation = r.SellerEvaluation,

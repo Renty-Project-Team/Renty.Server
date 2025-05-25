@@ -11,7 +11,8 @@ namespace Renty.Server.My.Domain.DTO
         public required string SellerName { get; set; }
         public required string? SellerProfileImageUrl { get; set; }
         public required string BuyerName { get; set; }
-        public required double Satisfaction { get; set; } 
+        public required string? BuyerProfileImageUrl { get; set; }
+        public required double Satisfaction { get; set; }
         public required string Content { get; set; }
         public required SellerEvaluation SellerEvaluation { get; set; }
         public required ICollection<string> ImagesUrl { get; set; }
