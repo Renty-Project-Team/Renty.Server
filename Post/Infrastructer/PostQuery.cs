@@ -19,6 +19,8 @@ namespace Renty.Server.Post.Infrastructer
                     .ThenInclude(comment => comment.User)
                 .Include(post => post.Comments)
                     .ThenInclude(comment => comment.Item)
+                .Include(post => post.Comments)
+                    .ThenInclude(comment => comment.Item!.ItemImages)
                 .FirstAsync(post => post.Id == postId);
 
             post.ViewCount++;

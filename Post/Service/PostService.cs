@@ -5,11 +5,12 @@ using Renty.Server.Post.Domain;
 using Renty.Server.Post.Domain.DTO;
 using Renty.Server.Post.Domain.Repository;
 using Renty.Server.Product.Domain;
+using Renty.Server.Product.Domain.Query;
 using Renty.Server.Product.Domain.Repository;
 
 namespace Renty.Server.Post.Service
 {
-    public class PostService(ICategoryRepository categoryRepo, IImageRepository imageRepo, IPostRepository postRepo)
+    public class PostService(ICategoryRepository categoryRepo, IImageRepository imageRepo, IPostRepository postRepo, IProductQuery productQuery)
     {
         private BuyerPosts CreatePost(PostUploadRequest request, string userId, Categorys category, ICollection<string> imgUrls)
         {
@@ -31,6 +32,19 @@ namespace Renty.Server.Post.Service
             };
         }
 
+        private BuyerPostComments CreateComment(PostCommentRequest request, string userId)
+        {
+            var now = TimeHelper.GetKoreanTime();
+            return new()
+            {
+                UserId = userId,
+                ItemId = request.ItemId,
+                Content = request.Content,
+                UpdatedAt = now,
+                CreatedAt = now,
+            };
+        }
+
         public async Task<int> Upload(PostUploadRequest request, string userId)
         {
             var categorys = await categoryRepo.FindBy(request.Category) ?? throw new CategoryNotFoundException();
@@ -48,6 +62,21 @@ namespace Renty.Server.Post.Service
                 imageRepo.RemoveImages();
                 throw;
             }
+        }
+
+        public async Task Comment(PostCommentRequest request, string userId)
+        {
+            var post = await postRepo.FindBy(request.PostId) ?? throw new PostNotFoundException();
+
+            if (request.ItemId is not null && await productQuery.Has(request.ItemId.Value, userId) is false)
+            {
+                throw new ItemNotFoundException();
+            }
+
+            var commnet = CreateComment(request, userId);
+
+            post.Comments.Add(commnet);
+            await postRepo.Save();
         }
     }
 }

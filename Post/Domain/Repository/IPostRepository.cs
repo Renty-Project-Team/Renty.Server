@@ -3,6 +3,7 @@
     public interface IPostRepository
     {
         void Add(BuyerPosts post);
+        Task<BuyerPosts?> FindBy(int postId);
         Task Save();
     }
 }

@@ -27,5 +27,10 @@ namespace Renty.Server.Product.Infrastructer
                 })
                 .ToListAsync();
         }
+
+        public async Task<bool> Has(int itemId, string userId)
+        {
+            return await dbContext.Items.AnyAsync(item => item.Id == itemId && item.SellerId == userId);
+        }
     }
 }

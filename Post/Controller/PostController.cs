@@ -47,5 +47,30 @@ namespace Renty.Server.Post.Controller
                 return BadRequest(new ProblemDetails() { Status = 400, Detail = "게시글을 찾을 수 없습니다.", });
             }
         }
+
+        [Authorize]
+        [HttpPost("comment")]
+        public async Task<IActionResult> Comment(PostCommentRequest request)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            try
+            {
+                if (request.ItemId is null && string.IsNullOrWhiteSpace(request.Content))
+                {
+                    return BadRequest(new ProblemDetails() { Status = 400, Detail = "상품을 첨부하거나 글을 작성해주세요." });
+                }
+
+                await service.Comment(request, userId);
+                return Ok();
+            }
+            catch (PostNotFoundException)
+            {
+                return BadRequest(new ProblemDetails() { Status = 400, Detail = "존재하지 않는 게시글입니다." });
+            }
+            catch (ItemNotFoundException)
+            {
+                return BadRequest(new ProblemDetails() { Status = 400, Detail = "해당 상품이 존재하지 않거나, 본인의 상품이 아닙니다." });
+            }
+        }
     }
 }

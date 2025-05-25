@@ -5,5 +5,6 @@ namespace Renty.Server.Product.Domain.Query
     public interface IProductQuery
     {
         Task<ICollection<PostsResponse>> GetMyPosts(string userId);
+        Task<bool> Has(int itemId, string userId);
     }
 }

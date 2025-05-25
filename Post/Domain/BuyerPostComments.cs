@@ -16,7 +16,7 @@ namespace Renty.Server.Post.Domain
         public int? ItemId { get; set; } // FK
 
         [Comment("댓글 포스트 id")]
-        public required int BuyerPostId { get; set; } // FK
+        public int BuyerPostId { get; set; } // FK
 
         [Comment("내용")]
         public string? Content { get; set; }
