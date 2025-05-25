@@ -6,6 +6,7 @@ using Renty.Server.My.Domain.Query;
 using Renty.Server.My.Service;
 using Renty.Server.Product.Domain.DTO;
 using Renty.Server.Product.Domain.Query;
+using Renty.Server.Review.Domain.Repository;
 using System.Security.Claims;
 
 namespace Renty.Server.My.Controller
@@ -13,7 +14,7 @@ namespace Renty.Server.My.Controller
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class MyController(MyService service, IWishListQuery wishListQuery, IUserQuery userQuery, IProductQuery productQuery) : ControllerBase
+    public class MyController(MyService service, IWishListQuery wishListQuery, IUserQuery userQuery, IProductQuery productQuery, IReviewQuery  reviewQuery) : ControllerBase
     {
         [HttpPost("wishlist")]
         public async Task<IActionResult> AddWishlist(WishListRequest request)
@@ -88,6 +89,14 @@ namespace Renty.Server.My.Controller
                 foreach (var error in e.Errors) { ModelState.AddModelError(string.Empty, error.Description); }
                 return BadRequest(ModelState);
             }
+        }
+
+        [HttpGet("review")]
+        public async Task<ActionResult<ICollection<ReviewResponse>>> GetReviews()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var userName = User.FindFirstValue(ClaimTypes.Name)!;
+            return Ok(await reviewQuery.GetReviews(userId, userName));
         }
     }
 }
