@@ -7,7 +7,7 @@ namespace Renty.Server.My.Domain.DTO
         public required int ItemId { get; set; }
         public required string ItemTitle { get; set; } 
         public required string ItemImageUrl { get; set; } 
-        public required string MyName { get; set; }
+        public required string? MyName { get; set; }
         public required string SellerName { get; set; }
         public required string? SellerProfileImageUrl { get; set; }
         public required string BuyerName { get; set; }

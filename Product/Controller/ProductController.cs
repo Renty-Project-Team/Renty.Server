@@ -1,16 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Renty.Server.Exceptions;
+using Renty.Server.My.Domain.DTO;
 using Renty.Server.Product.Domain.DTO;
 using Renty.Server.Product.Domain.Repository;
 using Renty.Server.Product.Service;
+using Renty.Server.Review.Domain.Repository;
 using System.Security.Claims;
 
 namespace Renty.Server.Product.Controller
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProductController(ProductService productService, IProductRepository product) : ControllerBase
+    public class ProductController(ProductService productService, IProductRepository product, IReviewQuery reviewQuery) : ControllerBase
     {
         [HttpPost("upload")]
         [Authorize]
@@ -53,7 +55,7 @@ namespace Renty.Server.Product.Controller
 
         [HttpPut("review")]
         [Authorize]
-        public async Task<IActionResult> Review([FromForm] ReviewRequest request)
+        public async Task<IActionResult> PutReview([FromForm] ReviewRequest request)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             try
@@ -73,6 +75,13 @@ namespace Renty.Server.Product.Controller
             {
                 return BadRequest(new ProblemDetails() { Status = 400, Detail = "자신에게 리뷰를 작성할 수 없습니다." });
             }
+        }
+
+        [HttpGet("review")]
+        public async Task<ActionResult<ReviewResponse>> GetReview(int itemId)
+        {
+            var userName = User.FindFirstValue(ClaimTypes.Name);
+            return Ok(await reviewQuery.GetReviews(itemId, userName));
         }
     }
 }

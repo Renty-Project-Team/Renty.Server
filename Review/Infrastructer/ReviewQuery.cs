@@ -29,5 +29,28 @@ namespace Renty.Server.Review.Infrastructer
                 .ToListAsync();
         }
 
+        public async Task<ICollection<ReviewResponse>> GetReviews(int itemId, string? userName)
+        {
+            return await dbContext.Reviews
+                .Where(r => r.ItemId == itemId)
+                .Select(r => new ReviewResponse
+                {
+                    ItemId = r.ItemId,
+                    ItemTitle = r.Item.Title,
+                    ItemImageUrl = r.Item.ItemImages.First().ImageUrl ?? string.Empty,
+                    MyName = userName,
+                    SellerName = r.Reviewee.UserName!,
+                    SellerProfileImageUrl = r.Reviewee.ProfileImage,
+                    BuyerName = r.Reviewer.UserName!,
+                    BuyerProfileImageUrl = r.Reviewer.ProfileImage,
+                    Satisfaction = r.Satisfaction,
+                    Content = r.Content,
+                    SellerEvaluation = r.SellerEvaluation,
+                    ImagesUrl = r.Images.OrderBy(i => i.DisplayOrder).Select(i => i.ImageUrl).ToList(),
+                    WritedAt = r.CreatedAt
+                })
+                .ToListAsync();
+        }
+
     }
 }
