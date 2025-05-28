@@ -27,6 +27,7 @@ namespace Renty.Server.My.Infrastructer
                     ChatCount = w.Item.Chats.Count,
                     CreatedAt = w.Item.CreatedAt,
                     ImageUrl = w.Item.ItemImages.OrderBy(img => img.Order).First().ImageUrl,
+                    State = w.Item.State
                 })
                 .ToListAsync();
         }
