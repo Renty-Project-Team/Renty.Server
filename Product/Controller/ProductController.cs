@@ -83,5 +83,26 @@ namespace Renty.Server.Product.Controller
             var userName = User.FindFirstValue(ClaimTypes.Name);
             return Ok(await reviewQuery.GetReviews(itemId, userName));
         }
+
+        [HttpPut("complete")]
+        [Authorize]
+        public async Task<IActionResult> CompleteTransaction([FromQuery] int itemId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            try
+            {
+                await productService.CompleteTransaction(itemId, userId);
+                return Ok();
+            }
+            catch (ItemNotFoundException)
+            {
+                return BadRequest(new ProblemDetails() { Status = 400, Detail = "상품을 찾을 수 없습니다." });
+            }
+            catch (NotSellerException)
+            {
+                return BadRequest(new ProblemDetails() { Status = 400, Detail = "해당 상품의 판매자가 아닙니다." });
+            }
+        }
+
     }
 }

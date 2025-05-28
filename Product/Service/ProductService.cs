@@ -147,5 +147,16 @@ namespace Renty.Server.Product.Service
             
             await productRepo.Save();
         }
+
+        public async Task CompleteTransaction(int itemId, string userId)
+        {
+            var item = await productRepo.FindBy(itemId) ?? throw new ItemNotFoundException();
+            if (item.SellerId != userId) throw new NotSellerException("해당 상품의 판매자가 아닙니다.");
+
+            item.State = ItemState.Inactive;
+            item.UpdatedAt = TimeHelper.GetKoreanTime();
+
+            await productRepo.Save();
+        }
     }
 }
