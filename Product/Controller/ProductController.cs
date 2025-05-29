@@ -104,5 +104,25 @@ namespace Renty.Server.Product.Controller
             }
         }
 
+        [HttpDelete("post")]
+        [Authorize]
+        public async Task<IActionResult> DeletePost([FromQuery] int itemId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            try
+            {
+                await productService.DeletePost(itemId, userId);
+                return Ok(new { Message = "상품 삭제를 성공했습니다." });
+            }
+            catch (ItemNotFoundException)
+            {
+                return BadRequest(new ProblemDetails() { Status = 400, Detail = "상품을 찾을 수 없습니다." });
+            }
+            catch (NotSellerException)
+            {
+                return BadRequest(new ProblemDetails() { Status = 400, Detail = "해당 상품의 판매자가 아닙니다." });
+            }
+        }
+
     }
 }
