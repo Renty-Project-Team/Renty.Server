@@ -250,7 +250,9 @@ namespace Renty.Server
                 entity.HasQueryFilter(bp => bp.DeletedAt == null);
 
                 // 인덱스 설정
-                entity.HasIndex(bp => new { bp.CreatedAt, bp.CategoryId });
+                entity.HasIndex(bp => new { bp.DeletedAt, bp.CreatedAt, bp.CategoryId });
+
+                entity.HasIndex(bp => new { bp.DeletedAt, bp.BuyerUserId });
 
                 // 관계 설정: BuyerPost -> User (다대일)
                 // BuyerPost는 하나의 User(BuyerUser)를 가짐
