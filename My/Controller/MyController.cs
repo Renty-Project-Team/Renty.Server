@@ -4,6 +4,8 @@ using Renty.Server.Exceptions;
 using Renty.Server.My.Domain.DTO;
 using Renty.Server.My.Domain.Query;
 using Renty.Server.My.Service;
+using Renty.Server.Post.Domain.DTO;
+using Renty.Server.Post.Domain.Repository;
 using Renty.Server.Product.Domain.DTO;
 using Renty.Server.Product.Domain.Query;
 using Renty.Server.Review.Domain.Repository;
@@ -14,7 +16,8 @@ namespace Renty.Server.My.Controller
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class MyController(MyService service, IWishListQuery wishListQuery, IUserQuery userQuery, IProductQuery productQuery, IReviewQuery  reviewQuery) : ControllerBase
+    public class MyController(MyService service, IWishListQuery wishListQuery, IUserQuery userQuery, IProductQuery productQuery, 
+        IReviewQuery reviewQuery, IPostQuery postQuery) : ControllerBase
     {
         [HttpPost("wishlist")]
         public async Task<IActionResult> AddWishlist(WishListRequest request)
@@ -64,6 +67,14 @@ namespace Renty.Server.My.Controller
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
             var posts = await productQuery.GetMyPosts(userId);
+            return Ok(posts);
+        }
+
+        [HttpGet("buyer-posts")]
+        public async Task<ActionResult<ICollection<BuyerPostResponse>>> GetMyBuyerPosts()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            var posts = await postQuery.GetMyBuyerPosts(userId);
             return Ok(posts);
         }
 

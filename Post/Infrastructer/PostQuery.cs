@@ -61,6 +61,30 @@ namespace Renty.Server.Post.Infrastructer
             };
         }
 
+        public async Task<ICollection<BuyerPostResponse>> GetMyBuyerPosts(string userId)
+        {
+            return await dbContext.BuyerPosts
+                .AsNoTracking()
+                .Where(post => post.BuyerUserId == userId)
+                .OrderByDescending(post => post.CreatedAt)
+                .Select(post =>
+                    new BuyerPostResponse()
+                    {
+                        Category = post.Category.Name,
+                        CommentCount = post.Comments.Count,
+                        CreatedAt = post.CreatedAt,
+                        Id = post.Id,
+                        ImageUrl = post.Images.Count > 0
+                            ? post.Images.OrderBy(img => img.DisplayOrder).First().ImageUrl
+                            : string.Empty,
+                        Title = post.Title,
+                        UserName = post.BuyerUser.UserName!,
+                        ViewCount = post.ViewCount
+                    }
+                )
+                .ToListAsync();
+        }
+
         public async Task<ICollection<BuyerPostResponse>> Take(BuyerPostsRequest request)
         {
             var query = dbContext.BuyerPosts.AsNoTracking().AsQueryable();
