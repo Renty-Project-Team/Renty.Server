@@ -78,5 +78,15 @@ namespace Renty.Server.Post.Service
             post.Comments.Add(commnet);
             await postRepo.Save();
         }
+
+        public async Task Delete(int postId, string userId)
+        {
+            var post = await postRepo.FindBy(postId) ?? throw new PostNotFoundException();
+            if (post.BuyerUserId != userId) throw new NotPostOwnerException();
+
+            post.DeletedAt = TimeHelper.GetKoreanTime();
+            
+            await postRepo.Save();
+        }
     }
 }

@@ -72,5 +72,25 @@ namespace Renty.Server.Post.Controller
                 return BadRequest(new ProblemDetails() { Status = 400, Detail = "해당 상품이 존재하지 않거나, 본인의 상품이 아닙니다." });
             }
         }
+
+        [Authorize]
+        [HttpDelete("post")]
+        public async Task<IActionResult> DeletePost(int postId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            try
+            {
+                await service.Delete(postId, userId);
+                return Ok();
+            }
+            catch (PostNotFoundException)
+            {
+                return BadRequest(new ProblemDetails() { Status = 400, Detail = "존재하지 않는 게시글입니다." });
+            }
+            catch (NotPostOwnerException)
+            {
+                return BadRequest(new ProblemDetails() { Status = 400, Detail = "해당 게시글의 작성자가 아닙니다." });
+            }
+        }
     }
 }

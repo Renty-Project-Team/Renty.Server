@@ -246,6 +246,10 @@ namespace Renty.Server
                 entity.Property(bp => bp.Description)
                       .HasMaxLength(1000);
 
+                // 쿼리 필터 설정
+                entity.HasQueryFilter(bp => bp.DeletedAt == null);
+
+                // 인덱스 설정
                 entity.HasIndex(bp => new { bp.CreatedAt, bp.CategoryId });
 
                 // 관계 설정: BuyerPost -> User (다대일)
