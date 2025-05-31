@@ -33,6 +33,7 @@ namespace Renty.Server.Post.Infrastructer
                 Description = post.Description,
                 Title = post.Title,
                 UserName = post.BuyerUser.UserName!,
+                UserProfileImage = post.BuyerUser.ProfileImage,
                 ViewCount = post.ViewCount,
                 CreatedAt = post.CreatedAt,
                 ImagesUrl = [.. post.Images.OrderBy(img => img.DisplayOrder).Select(img => img.ImageUrl)],

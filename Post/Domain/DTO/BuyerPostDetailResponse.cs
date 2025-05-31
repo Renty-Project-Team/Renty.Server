@@ -6,6 +6,7 @@ namespace Renty.Server.Post.Domain.DTO
     {
         public required int PostId { get; set; }
         public required string UserName { get; set; }
+        public required string? UserProfileImage { get; set; }
         public required string Title { get; set; }
         public required string Description { get; set; }
         public required CategoryType Category { get; set; }
