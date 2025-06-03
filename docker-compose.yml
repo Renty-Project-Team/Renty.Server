@@ -2,7 +2,7 @@
 
 services:
   renty-server-release: # 서비스 이름 (원하는 대로 지정 가능)
-    image: jsm150/renty_server:2.6
+    image: jsm150/renty_server:2.7
     ports:
       - "8086:8080" # "호스트_포트:컨테이너_포트(8080 고정)"
     environment:

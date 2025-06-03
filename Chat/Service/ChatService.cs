@@ -72,6 +72,7 @@ namespace Renty.Server.Chat.Service
         private TradeOffers CreateTradeOffer(Items item, string buyerId)
         {
             var transaction = item.Transactions.FirstOrDefault(t => t.BuyerId == buyerId);
+            var now = TimeHelper.GetKoreanTime();
 
             return transaction switch
             {
@@ -82,7 +83,9 @@ namespace Renty.Server.Chat.Service
                     SecurityDeposit = item.SecurityDeposit,
                     PriceUnit = item.PriceUnit,
                     BuyerId = buyerId,
-                    CreatedAt = TimeHelper.GetKoreanTime(),
+                    CreatedAt = now,
+                    BorrowStartAt = now.Date,
+                    ReturnAt = now.Date.AddDays(7),  
                 },
                 not null => new()
                 {
@@ -91,8 +94,10 @@ namespace Renty.Server.Chat.Service
                     SecurityDeposit = transaction.FinalSecurityDeposit,
                     PriceUnit = transaction.PriceUnit,
                     BuyerId = buyerId,
-                    CreatedAt = TimeHelper.GetKoreanTime(),
+                    CreatedAt = now,
                     State = TradeOfferState.Accepted,
+                    BorrowStartAt = transaction.BorrowStartAt,
+                    ReturnAt = transaction.ReturnAt,
                 }
             };
         }
